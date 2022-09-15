@@ -1,2 +1,2 @@
 # world-hash
-World Hash is a global, decentralized and consensus-driven Minecraft world.
+World Hash is a toolkit for sharing and experiencing Minecraft worlds through ENS and IPFS!
