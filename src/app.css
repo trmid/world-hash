@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+
+@font-face {
+  font-family: MinecraftEvenings;
+  src: url("/fonts/MinecraftEvenings-RBao.ttf") format("truetype");
+}
+
+:root {
+	--primary-color: #4c249f;
+	--secondary-color: #FFB636;
+	--accent-color: #35f0d0;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+*, *:after, *:before {
+	box-sizing: border-box;
+}
+
+html, body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	font-family: Silkscreen, sans-serif;
+	color: #ffffff;
+	background-color: var(--primary-color);
+	overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: white;
+	box-shadow: 0 0 20px 2px black;
+}
+
+::-webkit-scrollbar-thumb {
+  background: black;
+}
+
+.hide {
+	display: none !important;
+}
