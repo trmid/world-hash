@@ -6,9 +6,9 @@
 }
 
 :root {
-	--primary-color: #4c249f;
-	--secondary-color: #FFB636;
-	--accent-color: #35f0d0;
+	--primary-color: #43999E;
+	--secondary-color: #65C2CB;
+	--accent-color: #7ED759;
 }
 
 * {
@@ -26,7 +26,7 @@ html, body {
 	height: 100%;
 	font-family: Silkscreen, sans-serif;
 	color: #ffffff;
-	background-color: var(--primary-color);
+	background-color: var(--secondary-color);
 	overflow: hidden;
 }
 
@@ -35,12 +35,12 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: white;
+  background: var(--secondary-color);
 	box-shadow: 0 0 20px 2px black;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: black;
+  background: var(--primary-color);
 }
 
 .hide {
