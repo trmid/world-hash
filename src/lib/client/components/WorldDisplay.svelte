@@ -4,12 +4,12 @@
   import { resolveWorldFiles } from '../functions';
 
   // Type Imports:
-  import type { ENS, World } from '../types';
+  import type { ENS, WorldInfo } from '../types';
 
   // Initializations:
   export let ens: ENS | undefined;
   export let id: string;
-  export let world: World;
+  export let world: WorldInfo;
 
   // Reactive Date:
   $: date = new Date(world.timestamp * 1000);
@@ -43,7 +43,7 @@
   <!-- World Identifiers -->
   <div class="ids">
     <div class="idsWrapper">
-      <span class="worldName">{world.name}</span>
+      <span class="worldName">{world.name}{ens !== world.creator ? ` (by ${world.creator})` : ''}</span>
       <span class="worldHash">{id}</span>
     </div>
   </div>

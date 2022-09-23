@@ -5,7 +5,7 @@
   import WorldDisplay from './WorldDisplay.svelte';
 
   // Type Imports:
-  import type { ENS, World } from '../types';
+  import type { ENS, WorldInfo } from '../types';
 
   // Type Initializations:
   type LoadingStatus = 'none' | 'invalidENS' | 'resolvingENS' | 'resolvingIPFS' | 'done' | 'beef';
@@ -14,7 +14,7 @@
   const searchPlaceholder: string = 'Search for an ENS domain or IPFS hash...';
   let searchText: string = '';
   let ens: ENS | undefined = undefined;
-  let worlds: Record<string, World> = {};
+  let worlds: Record<string, WorldInfo> = {};
   let status: LoadingStatus = 'none';
 
   // Reactive World Names:
@@ -38,10 +38,10 @@
         try {
           setTimeout(() => {
             worlds = {
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2efsdfs6fsd76g789dsf6ygh98sdgtsd987gsd896gsd978g67sdg6sd8g6sd8g96sd98g6s9d8g6sd': { name: 'ETHCraft', timestamp: 1663884267 },
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267 },
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067 },
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267 }
+              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2efsdfs6fsd76g789dsf6ygh98sdgtsd987gsd896gsd978g67sdg6sd8g6sd8g96sd98g6s9d8g6sd': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
+              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
+              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
+              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
             }
             status = 'done';
           }, 1000);
