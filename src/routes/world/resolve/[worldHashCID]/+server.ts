@@ -41,7 +41,7 @@ export const POST: RequestHandler = async (req) => {
   if(!await ipfs.isValidCID(params.worldHashCID)) throw error(400, `invalid CID: ${params.worldHashCID}`);
 
   // Create node LMN filepath:
-  const worldLMNPath = `/world-hash/worlds/${params.worldHashCID}`;
+  const worldLMNPath = `/world-hash/worlds/${new Date(Date.now()).toISOString()}`;
 
   // Copy it to node files:
   const cpRes = await ipfs.cp(`/ipfs/${params.worldHashCID}`, worldLMNPath);
