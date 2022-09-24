@@ -9,7 +9,7 @@
   // Initializations:
   export let world: LocalWorldInfo;
 
-  // Function to add world to share list:
+  // Function to add world to future ENS update:
   const shareWorld = () => {
     // <TODO>
   }

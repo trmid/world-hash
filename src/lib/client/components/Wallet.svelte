@@ -1,22 +1,20 @@
 <script lang="ts">
 
   // Imports:
-  import { ethers } from 'ethers';
   import { onMount } from 'svelte';
-  import { ENS } from '@ensdomains/ensjs';
-
+  
   // Type Imports: 
+  import type { ethers } from 'ethers';
+  import type { ENS } from '@ensdomains/ensjs';
   import type { ENSDomain } from '$lib/client/types';
 
   // Initializations:
+  export let provider: ethers.providers.JsonRpcProvider;
+  export let ensInstance: ENS;
   export let chainID: string | undefined = undefined;
   export let address: string | undefined = undefined;
   export let ens: ENSDomain | undefined = 'ncookie.eth'; // <TODO> change back to undefined
-  const rpcURL: string = 'https://cloudflare-eth.com/';
   let connecting: boolean = false;
-
-  // Initializing ENS Instance:
-  const ensInstance = new ENS();
 
   // Function to check wallet chain ID:
   const checkChainID = async () => {
@@ -51,9 +49,7 @@
   const checkENS = async () => {
     try {
       if(address) {
-        const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-        await ensInstance.setProvider(provider); // <TODO> this is failing for some god forsaken reason (reached out on ENS dev channel)
-        const reverseResolution = await ensInstance.getName(address);
+        const reverseResolution = await ensInstance.withProvider(provider).getName(address); // <TODO> this is failing for some god forsaken reason (reached out on ENS dev channel)
         if(reverseResolution?.name) {
           ens = reverseResolution.name;
         } else {

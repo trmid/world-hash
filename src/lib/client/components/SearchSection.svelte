@@ -18,7 +18,7 @@
   let worlds: Record<string, WorldInfo> = {};
   let status: LoadingStatus = 'none';
 
-  // Reactive World Names:
+  // Reactive World IDs:
   $: worldIDs = Object.keys(worlds);
 
   // Function to scroll to bottom of page:
@@ -37,18 +37,15 @@
         status = 'resolvingENS';
         ens = searchText as ENSDomain;
         try {
-          setTimeout(() => {
-            worlds = {
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2efsdfs6fsd76g789dsf6ygh98sdgtsd987gsd896gsd978g67sdg6sd8g6sd8g96sd98g6s9d8g6sd': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
-              'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
-            }
-            status = 'done';
-          }, 1000);
+          worlds = {
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
+          }
           // <TODO> replace placeholders with actual function
           // worlds = await resolveENS(ens);
-          // status = 'done';
+          status = 'done';
         } catch(beef) {
           console.error(beef);
           status = 'beef';

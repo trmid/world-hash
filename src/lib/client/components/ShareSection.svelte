@@ -1,25 +1,36 @@
 <script lang="ts">
 
 	// Imports:
+  import { ethers } from 'ethers';
   import { onMount } from 'svelte';
-  import { getLocalWorlds } from '$lib/client/functions';
+  import { ENS } from '@ensdomains/ensjs';
+  import { getLocalWorlds, resolveENS } from '$lib/client/functions';
   import Title from '$lib/client/components/Title.svelte';
   import Wallet from '$lib/client/components/Wallet.svelte';
+  import ENSWorldDisplay from '$lib/client/components/ENSWorldDisplay.svelte';
   import LocalWorldDisplay from '$lib/client/components/LocalWorldDisplay.svelte';
 
   // Type Imports:
-  import type { ENSDomain, LocalWorldInfo } from '$lib/client/types';
+  import type { ENSDomain, LocalWorldInfo, WorldInfo } from '$lib/client/types';
 
   // Type Initializations:
-  type FileStatus = 'none' | 'reading' | 'done' | 'beef';
+  type LoadingStatus = 'none' | 'loading' | 'done' | 'beef';
 
   // Initializations:
+  const rpcURL: string = 'https://cloudflare-eth.com/';
   let localWorlds: LocalWorldInfo[] = [];
-  let fileStatus: FileStatus = 'none';
+  let fileStatus: LoadingStatus = 'none';
+  let ensContentStatus: LoadingStatus = 'none';
   let ens: ENSDomain | undefined = undefined;
+  let ensContent: Record<string, WorldInfo> = {};
+
+  // Initializing Provider & ENS Instance:
+  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
+  const ensInstance = new ENS();
 
   // Reactive ENS Contents:
   $: ens, resolveENSContent();
+  $: ensWorldIDs = Object.keys(ensContent);
 
   // Function to scroll to top of page:
   const scrollUp = () => {
@@ -31,7 +42,7 @@
 
   // Read local world files:
   const readLocalWorldFiles = async () => {
-    fileStatus = 'reading';
+    fileStatus = 'loading';
     try {
       localWorlds = [
         { name: 'My Test World', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
@@ -49,12 +60,27 @@
 
   // Function to read content on ENS:
   const resolveENSContent = async () => {
-    // <TODO>
+    if(ens) {
+      ensContentStatus = 'loading';
+      try {
+        ensContent = {
+          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
+          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
+          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
+          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
+        }
+        // <TODO> replace placeholders with actual function
+        // ensContent = await resolveENS(ens);
+        ensContentStatus = 'done';
+      } catch(beef) {
+        console.error(beef);
+        ensContentStatus = 'beef';
+      }
+    }
   }
 
   onMount(async () => {
     readLocalWorldFiles();
-    // <TODO> need to check existing minecraft content field
   });
 	
 </script>
@@ -70,7 +96,7 @@
   <Title preset="corner" />
 
   <!-- Wallet Connection -->
-  <Wallet bind:ens />
+  <Wallet {provider} {ensInstance} bind:ens />
 
   <!-- Main Content -->
   <div class="content">
@@ -86,7 +112,7 @@
           <LocalWorldDisplay {world} />
         {/each}
       </div>
-    {:else if fileStatus === 'reading'}
+    {:else if fileStatus === 'loading'}
       <div id="loadingLocalWorlds">
         <span>Reading local worlds...</span>
         <img class="spin" src="/images/book.png" alt="Spinning Book">
@@ -101,9 +127,18 @@
     <!-- ENS Content -->
     <div id="ensContent">
       <h3>Your ENS content</h3>
+      {#if ensWorldIDs.length > 0}
+        {#each ensWorldIDs as id}
+          <ENSWorldDisplay {id} world={ensContent[id]} />
+        {/each}
+      {:else}
+        <span>You don't seem to have any worlds up on ENS yet!</span>
+      {/if}
+      <!-- TODO - Style and add functionality to this button -->
+      <button id="updateENS">Update ENS</button>
     </div>
-  </div>
 
+  </div>
 
 </section>
 
@@ -187,7 +222,8 @@
   #ensContent {
     display: flex;
     flex-direction: column;
-    width: 35vw;
+    gap: 1.5em;
+    width: 40vw;
     margin: 10vh 5vw 0 0;
   }
 	
