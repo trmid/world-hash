@@ -201,7 +201,7 @@
   #worlds {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1.5em;
     width: 45vw;
     margin: 5vh 0 0 5vw;
     isolation: isolate;

@@ -33,9 +33,11 @@
   const readLocalWorldFiles = async () => {
     fileStatus = 'reading';
     try {
-      localWorlds.push({ name: 'My Test World', imageSrc: 'file:///C:/Users/Ncookie/AppData/Roaming/.minecraft/saves/Screenshot%20World/icon.png' });
-      localWorlds.push({ name: 'MuhCows', imageSrc: 'file:///C:/Users/Ncookie/AppData/Roaming/.minecraft/saves/Screenshot%20World/icon.png' });
-      localWorlds.push({ name: 'ETHCraft', imageSrc: 'file:///C:/Users/Ncookie/AppData/Roaming/.minecraft/saves/Screenshot%20World/icon.png' });
+      localWorlds = [
+        { name: 'My Test World', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
+        { name: 'MuhCows', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
+        { name: 'ETHCraft', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' }
+      ];
       // <TODO> remove placeholders and add actual function
       // localWorlds = await getLocalWorlds();
       fileStatus = 'done';
@@ -70,28 +72,38 @@
   <!-- Wallet Connection -->
   <Wallet bind:ens />
 
-  <!-- Local Worlds Display -->
-  {#if fileStatus === 'done' && ens}
-    <div id="localWorlds">
-      <div class="info">
-        <h3>Found {localWorlds.length.toLocaleString()} local worlds</h3>
-        <button on:click={readLocalWorldFiles}><i class="icofont-refresh" /></button>
+  <!-- Main Content -->
+  <div class="content">
+
+    <!-- Local Worlds Display -->
+    {#if fileStatus === 'done' && ens}
+      <div id="localWorlds">
+        <div class="info">
+          <h3>Found {localWorlds.length.toLocaleString()} local worlds</h3>
+          <button on:click={readLocalWorldFiles}><i class="icofont-loop" /></button>
+        </div>
+        {#each localWorlds as world}
+          <LocalWorldDisplay {world} />
+        {/each}
       </div>
-      {#each localWorlds as world}
-        <LocalWorldDisplay {world} />
-      {/each}
+    {:else if fileStatus === 'reading'}
+      <div id="loadingLocalWorlds">
+        <span>Reading local worlds...</span>
+        <img class="spin" src="/images/book.png" alt="Spinning Book">
+      </div>
+    {:else if fileStatus === 'beef'}
+      <div id="localWorldsError">
+        <span class="error">Could not read local world files</span>
+        <img src="/images/beef.png" alt="Beef">
+      </div>
+    {/if}
+
+    <!-- ENS Content -->
+    <div id="ensContent">
+      <h3>Your ENS content</h3>
     </div>
-  {:else if fileStatus === 'reading'}
-    <div id="loadingLocalWorlds">
-      <span>Reading local worlds...</span>
-      <img class="spin" src="/images/book.png" alt="Spinning Book">
-    </div>
-  {:else if fileStatus === 'beef'}
-    <div id="localWorldsError">
-      <span class="error">Could not read local world files</span>
-      <img src="/images/beef.png" alt="Beef">
-    </div>
-  {/if}
+  </div>
+
 
 </section>
 
@@ -124,23 +136,59 @@
     cursor: pointer;
   } */
 
+  div.content {
+    display: flex;
+    justify-content: space-between;
+    gap: 2em;
+  }
+
   #localWorlds {
     display: flex;
     flex-direction: column;
-    gap: 1em;
-    width: 45vw;
-    margin: 5vh 0 0 5vw;
+    gap: 1.5em;
+    width: 35vw;
+    margin: 25vh 0 0 5vw;
     isolation: isolate;
   }
 
-  #localWorlds h3 {
+  div.info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2em;
+  }
+
+  h3 {
     font-size: 3em;
     font-weight: normal;
     text-shadow: 2px 2px 5px black;
   }
 
+  div.info > button {
+    margin-top: .2em;
+    padding: 0 .2em;
+    font-size: 2em;
+    color: black;
+    background: var(--gold-color);
+    border: none;
+    outline: 4px solid var(--dark-gold-color);
+    appearance: none;
+    cursor: pointer;
+  }
+
+  div.info > button:hover {
+    outline-color: var(--nether-accent-color);
+  }
+
   span.error {
     color: red;
+  }
+
+  #ensContent {
+    display: flex;
+    flex-direction: column;
+    width: 35vw;
+    margin: 10vh 5vw 0 0;
   }
 	
 </style>

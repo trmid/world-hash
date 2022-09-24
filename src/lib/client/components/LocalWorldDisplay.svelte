@@ -51,8 +51,10 @@
   }
 
   img.icon {
-    height: 4em;
-    width: 4em;
+    height: 3em;
+    width: 3em;
+    margin: .5em 0;
+    border: 2px solid var(--dark-gold-color);
   }
 
   span.worldName {

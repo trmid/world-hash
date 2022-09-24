@@ -11,7 +11,7 @@
   // Initializations:
   export let chainID: string | undefined = undefined;
   export let address: string | undefined = undefined;
-  export let ens: ENSDomain | undefined = undefined;
+  export let ens: ENSDomain | undefined = 'ncookie.eth'; // <TODO> change back to undefined
   const rpcURL: string = 'https://cloudflare-eth.com/';
   let connecting: boolean = false;
 
