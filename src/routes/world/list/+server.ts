@@ -2,7 +2,7 @@ import * as fs from "fs/promises";
 import { join } from "path";
 import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
-import { getSavesDir } from "$lib/server/minecraft";
+import { getSavesDir, parseDatFileName } from "$lib/server/minecraft";
 
 /**
  * Fetches a list of local worlds from disk.
@@ -16,22 +16,24 @@ export const GET: RequestHandler = async () => {
   if(!savesDir) throw error(500, "Missing saves directory...");
 
   // Get world folders:
-  const worlds: { name: string, imageSrc: string }[] = [];
+  const worlds: { name: string, dir: string, imageSrc: string }[] = [];
   const dirContents = await fs.readdir(savesDir);
-  for(const filename of dirContents) {
+  for(const filepath of dirContents) {
 
     // Check if world dir exists:
-    const stat = await fs.stat(join(savesDir, filename));
+    const stat = await fs.stat(join(savesDir, filepath));
     if(stat.isDirectory()) {
 
       // Check if dir contains a level.dat file:
-      const levelDatStat = await fs.stat(join(savesDir, filename, "level.dat"));
+      const datFilepath = join(savesDir, filepath, "level.dat");
+      const levelDatStat = await fs.stat(datFilepath);
       if(levelDatStat.isFile()) {
         
         // Push world to list:
         worlds.push({
-          name: filename,
-          imageSrc: `world/saved/${filename}/icon`
+          name: await parseDatFileName(datFilepath) ?? filepath,
+          dir: filepath,
+          imageSrc: `world/saved/${filepath}/icon`
         });
       }
     }
