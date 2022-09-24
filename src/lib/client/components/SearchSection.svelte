@@ -1,0 +1,213 @@
+<script lang="ts">
+
+	// Imports:
+  import { resolveENS } from '$lib/client/functions';
+  import Title from '$lib/client/components/Title.svelte';
+  import WorldDisplay from '$lib/client/components/WorldDisplay.svelte';
+
+  // Type Imports:
+  import type { ENSDomain, WorldInfo } from '$lib/client/types';
+
+  // Type Initializations:
+  type LoadingStatus = 'none' | 'invalidENS' | 'resolvingENS' | 'resolvingIPFS' | 'done' | 'beef';
+
+  // Initializations:
+  const searchPlaceholder: string = 'Search for an ENS domain or IPFS hash...';
+  let searchText: string = '';
+  let ens: ENSDomain | undefined = undefined;
+  let worlds: Record<string, WorldInfo> = {};
+  let status: LoadingStatus = 'none';
+
+  // Reactive World IDs:
+  $: worldIDs = Object.keys(worlds);
+
+  // Function to scroll to bottom of page:
+  const scrollDown = () => {
+    const mainElement = document.querySelector('main');
+    if(mainElement) {
+      mainElement.scrollTop += window.innerHeight;
+    }
+  }
+
+  // Function to search for worlds given an ENS domain or IPFS hash:
+  const search = async () => {
+    if(searchText && status !== 'resolvingENS' && status !== 'resolvingIPFS') {
+      worlds = {};
+      if(searchText.endsWith('.eth')) {
+        status = 'resolvingENS';
+        ens = searchText as ENSDomain;
+        try {
+          worlds = {
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
+          }
+          // <TODO> replace placeholders with actual function
+          // worlds = await resolveENS(ens);
+          status = 'done';
+        } catch(beef) {
+          console.error(beef);
+          status = 'beef';
+        }
+      } else {
+        // <TODO> need ipfs hash validation
+        status = 'resolvingIPFS';
+        try {
+          // <TODO> resolve IPFS hash
+          status = 'done';
+        } catch(beef) {
+          console.error(beef);
+          status = 'beef';
+        }
+      }
+    }
+  }
+
+  // <TODO> need tooltip for portal
+	
+</script>
+
+<!-- #################################################################################################### -->
+
+<section>
+
+  <!-- Nether Portal -->
+  <img src="/images/overworldPortal.png" alt="Nether Portal" id="portal" on:click={scrollDown}>
+
+  <!-- Header -->
+  <Title />
+
+  <!-- Search Bar -->
+  <form id="search" on:submit|preventDefault={search}>
+    <input type="text" bind:value={searchText} placeholder={searchPlaceholder} spellcheck="false">
+    <button type="submit" class:potionOfInvisibility={!searchText}>></button>
+  </form>
+
+  <!-- Loading Info -->
+  <div id="loading">
+    {#if status === 'resolvingENS'}
+      <span>Resolving worlds from ENS...</span>
+      <img class="spin" src="/images/pickaxe.png" alt="Spinning Pickaxe">
+    {:else if status === 'resolvingIPFS'}
+      <span>Resolving worlds from IPFS...</span>
+      <img class="spin" src="/images/pickaxe.png" alt="Spinning Pickaxe">
+    {:else if status === 'beef'}
+      <span class="error">Could not find any worlds</span>
+      <img src="/images/beef.png" alt="Beef">
+    {/if}
+  </div>
+
+  <!-- TODO - need cool from-side animation for each item -->
+  <!-- Worlds Display -->
+  {#if worldIDs.length > 0}
+    <div id="worlds">
+      <h3>Found {worldIDs.length.toLocaleString()} worlds</h3>
+      {#each worldIDs as id}
+        <WorldDisplay {ens} {id} world={worlds[id]} />
+      {/each}
+    </div>
+  {/if}
+
+</section>
+
+<!-- #################################################################################################### -->
+
+<style>
+
+	section {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    padding: 2em;
+    background: url('/images/overworldBG.png');
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    scroll-snap-align: start;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  #portal {
+    position: absolute;
+    bottom: 177px;
+    right: 268px;
+    user-select: none;
+  }
+
+  #portal:hover {
+    filter: drop-shadow(0 0 1.5em var(--accent-color));
+    cursor: pointer;
+  }
+
+  #search {
+    position: relative;
+    display: flex;
+    width: 50ch;
+    margin: 0 auto;
+    background: var(--secondary-color);
+    border: .2em solid var(--primary-color);
+  }
+
+  #search > input {
+    flex: 1;
+    padding: .5em;
+    font: inherit;
+    text-align: center;
+    background: none;
+    border: none;
+    appearance: none;
+  }
+
+  #search > button {
+    position: absolute;
+    right: 0;
+    padding: .5em 1em;
+    font: inherit;
+    background: none;
+    border: none;
+    appearance: none;
+    cursor: pointer;
+  }
+
+  #search > button.potionOfInvisibility {
+    color: transparent;
+  }
+
+  input:focus, button:focus {
+    outline: none;
+  }
+
+  #loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    margin-top: 1em;
+  }
+
+  #loading > img {
+    height: 1.5em;
+    width: 1.5em;
+  }
+
+  span.error {
+    color: red;
+  }
+
+  #worlds {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    width: 45vw;
+    margin: 5vh 0 0 5vw;
+    isolation: isolate;
+  }
+
+  #worlds h3 {
+    font-size: 4em;
+    font-weight: normal;
+    text-shadow: 2px 2px 5px black;
+  }
+	
+</style>

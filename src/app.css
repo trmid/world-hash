@@ -9,6 +9,9 @@
 	--primary-color: #43999E;
 	--secondary-color: #65C2CB;
 	--accent-color: #7ED759;
+	--gold-color: #FEFE6C;
+	--dark-gold-color: #D8AD2D;
+	--nether-accent-color: #d85d2d;
 }
 
 * {
@@ -31,18 +34,18 @@ html, body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--secondary-color);
-	box-shadow: 0 0 20px 2px black;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
+  display: none;
 }
 
 .hide {
 	display: none !important;
+}
+
+.spin {
+	animation: spin .5s infinite linear;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(359deg); }
 }
