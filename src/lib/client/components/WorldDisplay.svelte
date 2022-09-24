@@ -1,13 +1,13 @@
 <script lang="ts">
 
 	// Imports:
-  import { resolveWorldFiles } from '../functions';
+  import { resolveWorldFiles } from '$lib/client/functions';
 
   // Type Imports:
-  import type { ENS, WorldInfo } from '../types';
+  import type { ENSDomain, WorldInfo } from '$lib/client/types';
 
   // Initializations:
-  export let ens: ENS | undefined;
+  export let ens: ENSDomain | undefined;
   export let id: string;
   export let world: WorldInfo;
 
@@ -23,11 +23,21 @@
         console.error(beef);
       }
     } else {
+      // <TODO> need ipfs hash validation
       try {
         // <TODO> resolve ipfs hash (need a different function)
       } catch(beef) {
         console.error(beef);
       }
+    }
+  }
+
+  // Function to display world creator:
+  const displayCreator = () => {
+    if(world.creator !== '' && ens !== world.creator) {
+      return ` (by ${world.creator})`;
+    } else {
+      return '';
     }
   }
 	
@@ -43,7 +53,7 @@
   <!-- World Identifiers -->
   <div class="ids">
     <div class="idsWrapper">
-      <span class="worldName">{world.name}{ens !== world.creator ? ` (by ${world.creator})` : ''}</span>
+      <span class="worldName">{world.name}{displayCreator()}</span>
       <span class="worldHash">{id}</span>
     </div>
   </div>
@@ -66,7 +76,7 @@
     gap: 1em;
     padding: 0 1em 0 .5em;
     background: var(--accent-color);
-    outline: 2px solid white;
+    outline: 4px solid white;
     overflow: hidden;
   }
 

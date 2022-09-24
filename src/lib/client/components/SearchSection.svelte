@@ -1,11 +1,12 @@
 <script lang="ts">
 
 	// Imports:
-  import { resolveENS } from '../functions';
-  import WorldDisplay from './WorldDisplay.svelte';
+  import { resolveENS } from '$lib/client/functions';
+  import Title from '$lib/client/components/Title.svelte';
+  import WorldDisplay from '$lib/client/components/WorldDisplay.svelte';
 
   // Type Imports:
-  import type { ENS, WorldInfo } from '../types';
+  import type { ENSDomain, WorldInfo } from '$lib/client/types';
 
   // Type Initializations:
   type LoadingStatus = 'none' | 'invalidENS' | 'resolvingENS' | 'resolvingIPFS' | 'done' | 'beef';
@@ -13,7 +14,7 @@
   // Initializations:
   const searchPlaceholder: string = 'Search for an ENS domain or IPFS hash...';
   let searchText: string = '';
-  let ens: ENS | undefined = undefined;
+  let ens: ENSDomain | undefined = undefined;
   let worlds: Record<string, WorldInfo> = {};
   let status: LoadingStatus = 'none';
 
@@ -34,7 +35,7 @@
       worlds = {};
       if(searchText.endsWith('.eth')) {
         status = 'resolvingENS';
-        ens = searchText as ENS;
+        ens = searchText as ENSDomain;
         try {
           setTimeout(() => {
             worlds = {
@@ -53,6 +54,7 @@
           status = 'beef';
         }
       } else {
+        // <TODO> need ipfs hash validation
         status = 'resolvingIPFS';
         try {
           // <TODO> resolve IPFS hash
@@ -77,7 +79,7 @@
   <img src="/images/overworldPortal.png" alt="Nether Portal" id="portal" on:click={scrollDown}>
 
   <!-- Header -->
-  <h1>World Hash</h1>
+  <Title />
 
   <!-- Search Bar -->
   <form id="search" on:submit|preventDefault={search}>
@@ -139,32 +141,6 @@
   #portal:hover {
     filter: drop-shadow(0 0 1.5em var(--accent-color));
     cursor: pointer;
-  }
-
-  h1 {
-    position: relative;
-    margin: 15vh 0 .2em;
-    font-family: MinecraftEvenings;
-    font-size: 10em;
-    letter-spacing: .05em;
-    line-height: .8em;
-    text-align: center;
-    color: white;
-    user-select: none;
-    background: url('/images/dirt.png');
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-  }
-
-  h1:after {
-    content: 'World Hash';
-    position: absolute;
-    inset: 0;
-    text-shadow: 4px 4px 10px black;
-    z-index: -1;
   }
 
   #search {
@@ -231,7 +207,7 @@
     isolation: isolate;
   }
 
-  #worlds > h3 {
+  #worlds h3 {
     font-size: 4em;
     font-weight: normal;
     text-shadow: 2px 2px 5px black;
