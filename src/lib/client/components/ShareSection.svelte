@@ -1,36 +1,35 @@
 <script lang="ts">
 
 	// Imports:
-  import { ethers } from 'ethers';
+  import type { ethers } from 'ethers'; // <TODO> change back to non-type import
   import { onMount } from 'svelte';
-  import { ENS } from '@ensdomains/ensjs';
-  import { getLocalWorlds, resolveENS } from '$lib/client/functions';
+  import { getLocalWorlds, resolveENS, shareWorldCatalog, shareWorld } from '$lib/client/functions';
   import Title from '$lib/client/components/Title.svelte';
   import Wallet from '$lib/client/components/Wallet.svelte';
   import ENSWorldDisplay from '$lib/client/components/ENSWorldDisplay.svelte';
   import LocalWorldDisplay from '$lib/client/components/LocalWorldDisplay.svelte';
 
   // Type Imports:
-  import type { ENSDomain, LocalWorldInfo, WorldInfo } from '$lib/client/types';
+  import type { ENSDomain, MinecraftJSON, LocalWorldInfo } from '$lib/client/types';
 
   // Type Initializations:
   type LoadingStatus = 'none' | 'loading' | 'done' | 'beef';
 
   // Initializations:
-  const rpcURL: string = 'https://cloudflare-eth.com/';
+  let provider: ethers.providers.JsonRpcProvider | undefined;
   let localWorlds: LocalWorldInfo[] = [];
   let fileStatus: LoadingStatus = 'none';
-  let ensContentStatus: LoadingStatus = 'none';
+  let ensResolutionStatus: LoadingStatus = 'none';
+  let ipfsShareStatus: LoadingStatus = 'none';
+  let txStatus: LoadingStatus = 'none';
   let ens: ENSDomain | undefined = undefined;
-  let ensContent: Record<string, WorldInfo> = {};
-
-  // Initializing Provider & ENS Instance:
-  const provider = new ethers.providers.JsonRpcProvider(rpcURL);
-  const ensInstance = new ENS();
+  let ensContent: MinecraftJSON | undefined = undefined;
+  let newWorldIDs = new Set<string>();
+  let catalogCID: string | undefined = undefined;
 
   // Reactive ENS Contents:
   $: ens, resolveENSContent();
-  $: ensWorldIDs = Object.keys(ensContent);
+  $: ensWorldIDs = ensContent ? Object.keys(ensContent.worlds) : [];
 
   // Function to scroll to top of page:
   const scrollUp = () => {
@@ -61,31 +60,77 @@
   // Function to read content on ENS:
   const resolveENSContent = async () => {
     if(ens) {
-      ensContentStatus = 'loading';
+      ensResolutionStatus = 'loading';
       try {
         ensContent = {
-          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
-          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
-          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
-          'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
+          worlds: {
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
+            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
+          }
         }
         // <TODO> replace placeholders with actual function
         // ensContent = await resolveENS(ens);
-        ensContentStatus = 'done';
+        ensResolutionStatus = 'done';
       } catch(beef) {
         console.error(beef);
-        ensContentStatus = 'beef';
+        ensResolutionStatus = 'beef';
       }
     }
   }
 
   // Function to update worlds on IPFS and ENS:
   const updateWorlds = async () => {
-    // <TODO> send worlds to `pin to ipfs` endpoint and get CID
+    await updateIPFS();
+    await updateENS();
   }
 
-  // <TODO> need function to give new json file to backend and get catalog CID
-  // <TODO> need function to update ens with new CID
+  // Function to update IPFS:
+  const updateIPFS = async () => {
+    if(ensContent && catalogCID === undefined) {
+      ipfsShareStatus = 'loading';
+      try {
+        catalogCID = await shareWorldCatalog(ensContent);
+        ipfsShareStatus = 'done';
+      } catch(beef) {
+        console.error(beef);
+        ipfsShareStatus = 'beef';
+      }
+    }
+  }
+
+  // Function to update ENS:
+  const updateENS = async () => {
+    if(ensContent) {
+      // <TODO>
+    }
+  }
+
+  // Function to get world hash for newly shared world:
+  const getWorldHash = async (world: LocalWorldInfo) => {
+    if(ensContent && ens) {
+      const worldHash = await shareWorld(world.dir);
+      const name = world.name;
+      const timestamp = Date.now() / 1000;
+      const creator = ens;
+      ensContent.worlds[worldHash] = { name, timestamp, creator };
+      newWorldIDs.add(worldHash);
+      catalogCID = undefined;
+    }
+  }
+
+  // Function to remove world hash from ENS content:
+  const hideWorld = async (cid: string) => {
+    if(ensContent && ensContent.worlds[cid]) {
+      delete ensContent.worlds[cid];
+      catalogCID = undefined;
+    }
+    if(newWorldIDs.has(cid)) {
+      newWorldIDs.delete(cid);
+      catalogCID = undefined;
+    }
+  }
 
   onMount(async () => {
     readLocalWorldFiles();
@@ -102,9 +147,9 @@
   
   <!-- Header -->
   <Title preset="corner" />
-
+D
   <!-- Wallet Connection -->
-  <Wallet {provider} {ensInstance} bind:ens />
+  <Wallet bind:provider bind:ens />
 
   <!-- Main Content -->
   <div class="content">
@@ -117,7 +162,7 @@
           <button on:click={readLocalWorldFiles}><i class="icofont-loop" /></button>
         </div>
         {#each localWorlds as world}
-          <LocalWorldDisplay {world} />
+          <LocalWorldDisplay onShare={getWorldHash} {world} />
         {/each}
       </div>
     {:else if fileStatus === 'loading'}
@@ -133,17 +178,25 @@
     {/if}
 
     <!-- ENS Content -->
-    {#if ensContentStatus === 'done' && ens}
+    {#if ensResolutionStatus === 'done' && ens && ensContent}
       <div id="ensContent">
         <h3>Your ENS content</h3>
         {#if ensWorldIDs.length > 0}
           {#each ensWorldIDs as id}
-            <ENSWorldDisplay {id} world={ensContent[id]} />
+            <ENSWorldDisplay onThrowWorldInLava={hideWorld} {id} world={ensContent.worlds[id]} />
           {/each}
         {:else}
           <span>You don't seem to have any worlds up on ENS yet!</span>
         {/if}
-        <button on:click={updateWorlds}>Update ENS</button>
+        <button on:click={updateWorlds} disabled={ipfsShareStatus === 'loading' || txStatus === 'loading'}>
+          {#if ipfsShareStatus === 'loading'}
+            Sharing on IPFS...
+          {:else if txStatus === 'loading'}
+            Updating ENS...
+          {:else}
+            Update ENS
+          {/if}
+        </button>
       </div>
     {/if}
 
