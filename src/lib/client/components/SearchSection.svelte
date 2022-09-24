@@ -64,8 +64,6 @@
       }
     }
   }
-
-  // <TODO> need tooltip for portal
 	
 </script>
 
@@ -105,7 +103,6 @@
     {/if}
   </div>
 
-  <!-- TODO - need cool from-side animation for each item -->
   <!-- Worlds Display -->
   {#if status === 'done'}
     <div id="worlds">

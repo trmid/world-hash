@@ -59,16 +59,7 @@
     if(ens) {
       ensResolutionStatus = 'loading';
       try {
-        ensContent = {
-          worlds: {
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
-          }
-        }
-        // <TODO> replace placeholders with actual function
-        // ensContent = await resolveENS(ens);
+        ensContent = await resolveENS(ens);
         Object.keys(ensContent.worlds).forEach(cid => worldIDs.push(cid));
         ensResolutionStatus = 'done';
       } catch(beef) {
@@ -88,13 +79,8 @@
   const updateIPFS = async () => {
     ipfsShareStatus = 'loading';
     try {
-      setTimeout(() => {
-        catalogCID = 'QmWpqe6a5b7kL5JSEx5582Di1rZhPMHGryojXPQgE33qDY';
-        ipfsShareStatus = 'done';
-      }, 2000);
-      // <TODO> replace placeholder with actual function
-      // catalogCID = await shareWorldCatalog(ensContent);
-      // ipfsShareStatus = 'done';
+      catalogCID = await shareWorldCatalog(ensContent);
+      ipfsShareStatus = 'done';
     } catch(beef) {
       console.error(beef);
       ipfsShareStatus = 'beef';

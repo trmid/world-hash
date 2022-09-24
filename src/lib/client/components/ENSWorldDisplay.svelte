@@ -1,7 +1,7 @@
 <script lang="ts">
 
   // Type Imports:
-  import type { ENSDomain, WorldInfo } from '$lib/client/types';
+  import type { WorldInfo } from '$lib/client/types';
 
   // Initializations:
   export let id: string;
@@ -10,10 +10,6 @@
 
   // Reactive Date:
   $: date = new Date(world.timestamp * 1000);
-
-  // <TODO> need to allow user to edit creator attribute
-
-  // <TODO> newly added worlds (not on ENS yet) should be displayed differently
 	
 </script>
 
