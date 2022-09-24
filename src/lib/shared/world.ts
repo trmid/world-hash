@@ -11,6 +11,7 @@ export interface WorldInfo {
 }
 
 export function isValidWorldCatalog(catalog: WorldCatalog): catalog is WorldCatalog {
+  if(typeof catalog !== "object") return false;
   for(const key in catalog) {
     if(!isValidWorldInfo(catalog[key])) return false;
   }

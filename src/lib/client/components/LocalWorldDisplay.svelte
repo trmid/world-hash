@@ -1,18 +1,11 @@
 <script lang="ts">
 
-	// Imports:
-  // :3
-
   // Type Imports:
   import type { LocalWorldInfo } from '$lib/client/types';
 
   // Initializations:
   export let world: LocalWorldInfo;
-
-  // Function to add world to future ENS update:
-  const shareWorld = () => {
-    // <TODO>
-  }
+  export let onShare: Function;
 	
 </script>
 
@@ -27,7 +20,7 @@
   <span class="worldName">{world.name}</span>
 
   <!-- Share Checkbox -->
-  <button class="share" on:click={shareWorld}><i class="icofont-plus" /></button>
+  <button class="share" on:click={() => onShare(world)} title="Share World"><i class="icofont-plus" /></button>
 
 </div>
 

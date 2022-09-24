@@ -1,20 +1,19 @@
 <script lang="ts">
 
   // Imports:
+  import { ethers } from 'ethers';
   import { onMount } from 'svelte';
   
   // Type Imports: 
-  import type { ethers } from 'ethers';
-  import type { ENS } from '@ensdomains/ensjs';
   import type { ENSDomain } from '$lib/client/types';
 
   // Initializations:
-  export let provider: ethers.providers.JsonRpcProvider;
-  export let ensInstance: ENS;
+  export let provider: ethers.providers.JsonRpcProvider | undefined = undefined;
+  export let signer: ethers.providers.JsonRpcSigner | undefined = undefined;
   export let chainID: string | undefined = undefined;
   export let address: string | undefined = undefined;
-  // export let ens: ENSDomain | undefined = undefined;
-  export let ens: ENSDomain | undefined = 'ncookie.eth'; // <TODO> remove placeholder
+  export let ens: ENSDomain | undefined = undefined;
+  const rpcURL: string = 'https://cloudflare-eth.com/';
   let connecting: boolean = false;
 
   // Function to check wallet chain ID:
@@ -32,6 +31,8 @@
       const accounts: string[] = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       if(accounts.length > 0) {
         address = accounts[0];
+        let tempWalletProvider = new ethers.providers.Web3Provider((window as any).ethereum);
+        signer = tempWalletProvider.getSigner();
         await checkENS();
       } else {
         address = undefined;
@@ -49,13 +50,9 @@
   // Function to check ENS domain for a given wallet address:
   const checkENS = async () => {
     try {
-      if(address) {
-        const reverseResolution = await ensInstance.withProvider(provider).getName(address); // <TODO> this is failing for some god forsaken reason (reached out on ENS dev channel)
-        if(reverseResolution?.name) {
-          ens = reverseResolution.name;
-        } else {
-          ens = undefined;
-        }
+      if(address && provider) {
+        const name = await provider.lookupAddress(address);
+        ens = name as ENSDomain ?? undefined;
       } else {
         ens = undefined;
       }
@@ -73,6 +70,9 @@
   }
 
   onMount(async () => {
+
+    // Initializing Provider:
+    provider = new ethers.providers.JsonRpcProvider(rpcURL);
 
     // Event handlers:
     if(typeof (window as any).ethereum !== 'undefined') {

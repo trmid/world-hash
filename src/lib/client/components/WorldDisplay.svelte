@@ -6,29 +6,31 @@
   // Type Imports:
   import type { ENSDomain, WorldInfo } from '$lib/client/types';
 
+  // Type Initializations:
+  type LoadingStatus = 'none' | 'loading' | 'done' | 'beef';
+
   // Initializations:
   export let ens: ENSDomain | undefined;
   export let id: string;
   export let world: WorldInfo;
+  let downloadStatus: LoadingStatus = 'none';
 
   // Reactive Date:
   $: date = new Date(world.timestamp * 1000);
 
   // Function to download world:
   const downloadWorld = async () => {
-    if(ens) {
-      try {
-        // const success = await resolveWorldFiles(ens, id);
-      } catch(beef) {
-        console.error(beef);
+    downloadStatus = 'loading';
+    try {
+      const success = await resolveWorldFiles(id);
+      if(success) {
+        downloadStatus = 'done';
+      } else {
+        downloadStatus = 'beef';
       }
-    } else {
-      // <TODO> need ipfs hash validation
-      try {
-        // <TODO> resolve ipfs hash (need a different function)
-      } catch(beef) {
-        console.error(beef);
-      }
+    } catch(beef) {
+      console.error(beef);
+      downloadStatus = 'beef';
     }
   }
 
@@ -62,7 +64,17 @@
   <span class="date">{date.toLocaleString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
 
   <!-- Download Button -->
-  <button class="download" on:click={downloadWorld}><i class="icofont-download" /></button>
+  <button class="download" on:click={downloadWorld} title="Download World" disabled={downloadStatus !== 'none'}>
+    {#if downloadStatus === 'done'}
+      <i class="icofont-ui-check" />
+    {:else if downloadStatus === 'beef'}
+      <i class="icofont-ui-close" />
+    {:else if downloadStatus === 'loading'}
+      <img class="spin" src="/images/pickaxe.png" alt="Spinning Pickaxe">
+    {:else}
+      <i class="icofont-download" />
+    {/if}
+  </button>
 
 </div>
 
@@ -122,6 +134,15 @@
 
   button.download:hover {
     color: var(--primary-color);
+  }
+
+  button.download > img {
+    height: 1.5em;
+    width: 1.5em;
+  }
+
+  button:disabled {
+    cursor: auto;
   }
 	
 </style>

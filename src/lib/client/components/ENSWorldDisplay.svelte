@@ -1,22 +1,15 @@
 <script lang="ts">
 
-	// Imports:
-  // :3
-
   // Type Imports:
   import type { ENSDomain, WorldInfo } from '$lib/client/types';
 
   // Initializations:
   export let id: string;
   export let world: WorldInfo;
+  export let onThrowWorldInLava: Function;
 
   // Reactive Date:
   $: date = new Date(world.timestamp * 1000);
-
-  // Function to delete world from future ENS update:
-  const throwWorldInLava = () => {
-    // <TODO>
-  }
 
   // <TODO> need to allow user to edit creator attribute
 
@@ -43,7 +36,7 @@
   <span class="date">{date.toLocaleString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
 
   <!-- Delete Button -->
-  <button class="delete" on:click={throwWorldInLava} title="Throw World In Lava"><i class="icofont-trash" /></button>
+  <button class="delete" on:click={() => onThrowWorldInLava(id)} title="Throw World In Lava"><i class="icofont-trash" /></button>
 
 </div>
 

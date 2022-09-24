@@ -1,9 +1,7 @@
 import { getSavesDir } from "$lib/server/minecraft";
-import type { WorldInfo } from "$lib/shared/world";
 import { error } from "@sveltejs/kit";
 import * as fs from "fs/promises";
 import { join } from "path";
-import { GET as GETLocalWorlds } from "../../../list/+server";
 import type { RequestHandler } from './$types';
 
 /**
@@ -12,10 +10,6 @@ import type { RequestHandler } from './$types';
  * Acts as a proxy for fetching icon.png files from local minecraft saves.
  */
 export const GET: RequestHandler = async ({ params }) => {
-
-  // Check if world exists:
-  const worlds: WorldInfo[] = (await (await GETLocalWorlds(<any>{})).json()).worlds;
-  if(!worlds.filter(x => x.name === params.dirName)[0]) throw error(500, "local world list does not contain the given world name");
 
   // Get the file path:
   const savesDir = await getSavesDir();

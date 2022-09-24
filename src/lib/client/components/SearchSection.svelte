@@ -6,7 +6,7 @@
   import WorldDisplay from '$lib/client/components/WorldDisplay.svelte';
 
   // Type Imports:
-  import type { ENSDomain, WorldInfo } from '$lib/client/types';
+  import type { ENSDomain, MinecraftJSON } from '$lib/client/types';
 
   // Type Initializations:
   type LoadingStatus = 'none' | 'invalidENS' | 'invalidIPFS' | 'resolvingENS' | 'resolvingIPFS' | 'done' | 'beef';
@@ -15,7 +15,7 @@
   const searchPlaceholder: string = 'Search for an ENS domain or IPFS hash...';
   let searchText: string = '';
   let ens: ENSDomain | undefined = undefined;
-  let worlds: Record<string, WorldInfo> = {};
+  let worlds: MinecraftJSON['worlds'] = {};
   let status: LoadingStatus = 'none';
 
   // Reactive World IDs:
@@ -37,7 +37,8 @@
         if(searchText.length > 4) {
           status = 'resolvingENS';
           try {
-            worlds = await resolveENS(searchText as ENSDomain);
+            const data = await resolveENS(searchText as ENSDomain);
+            worlds = data.worlds;
             status = 'done';
           } catch(beef) {
             console.error(beef);
@@ -49,7 +50,8 @@
       } else {
         status = 'resolvingIPFS';
         try {
-          worlds = await resolveIPFS(searchText);
+          const data = await resolveIPFS(searchText);
+          worlds = data.worlds;
           status = 'done';
         } catch(beef: any) {
           console.error(beef);

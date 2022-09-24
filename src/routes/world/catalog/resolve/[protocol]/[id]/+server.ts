@@ -2,7 +2,7 @@ import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
 import { ethers } from 'ethers';
 import { ipfsFetch, isValidCID } from '$lib/server/ipfs';
-import { isValidWorldInfo, type WorldInfo } from '$lib/shared/world';
+import { isValidWorldInfo, type MinecraftJSON, type WorldCatalog, type WorldInfo } from '$lib/shared/world';
 
 /**
  * Resolves a world catalog from a CID or ENS name.
@@ -36,21 +36,21 @@ export const GET: RequestHandler = async ({ params }) => {
   if(!await isValidCID(cid)) throw error(400, `invalid CID: ${cid}`);
 
   // Resolve JSON directory:
-  let worldCatalog: { worlds: Record<string, WorldInfo> } = { worlds: {} };
+  let minecraftJSON: MinecraftJSON = { worlds: {} };
   try {
-    worldCatalog = await (await ipfsFetch(cid)).json();
+    minecraftJSON = await (await ipfsFetch(cid)).json();
   } catch(err) {
     console.error(err);
     throw error(500, `failed to resolve JSON from CID: ${cid}`);
   }
   
   // Validate world info:
-  for(const [cid, info] of Object.entries(worldCatalog.worlds)) {
+  for(const [cid, info] of Object.entries(minecraftJSON.worlds)) {
     if(!await isValidCID(cid) && isValidWorldInfo(info)) {
       throw error(500, "resolved invalid world info");
     }
   }
 
   // Return worlds:
-  return json({ cid, ...worldCatalog });
+  return json({ cid, data: minecraftJSON });
 };
