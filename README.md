@@ -6,8 +6,14 @@ World Hash is a toolkit for sharing and experiencing Minecraft worlds through EN
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)
 
+## Usage
+
+TODO
+
 ## Local Development
 
 Install dependencies with `npm i`.
+
+Setup your `.env` file (an example file is provided).
 
 Run local server with `npm run dev`.
