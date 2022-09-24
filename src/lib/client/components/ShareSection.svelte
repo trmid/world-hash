@@ -45,9 +45,9 @@
     fileStatus = 'loading';
     try {
       localWorlds = [
-        { name: 'My Test World', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
-        { name: 'MuhCows', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
-        { name: 'ETHCraft', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' }
+        { name: 'My Test World', dir: 'something', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
+        { name: 'MuhCows', dir: 'something', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
+        { name: 'ETHCraft', dir: 'something', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' }
       ];
       // <TODO> remove placeholders and add actual function
       // localWorlds = await getLocalWorlds();
@@ -78,6 +78,14 @@
       }
     }
   }
+
+  // Function to update worlds on IPFS and ENS:
+  const updateWorlds = async () => {
+    // <TODO> send worlds to `pin to ipfs` endpoint and get CID
+  }
+
+  // <TODO> need function to give new json file to backend and get catalog CID
+  // <TODO> need function to update ens with new CID
 
   onMount(async () => {
     readLocalWorldFiles();
@@ -125,18 +133,19 @@
     {/if}
 
     <!-- ENS Content -->
-    <div id="ensContent">
-      <h3>Your ENS content</h3>
-      {#if ensWorldIDs.length > 0}
-        {#each ensWorldIDs as id}
-          <ENSWorldDisplay {id} world={ensContent[id]} />
-        {/each}
-      {:else}
-        <span>You don't seem to have any worlds up on ENS yet!</span>
-      {/if}
-      <!-- TODO - Style and add functionality to this button -->
-      <button id="updateENS">Update ENS</button>
-    </div>
+    {#if ensContentStatus === 'done' && ens}
+      <div id="ensContent">
+        <h3>Your ENS content</h3>
+        {#if ensWorldIDs.length > 0}
+          {#each ensWorldIDs as id}
+            <ENSWorldDisplay {id} world={ensContent[id]} />
+          {/each}
+        {:else}
+          <span>You don't seem to have any worlds up on ENS yet!</span>
+        {/if}
+        <button on:click={updateWorlds}>Update ENS</button>
+      </div>
+    {/if}
 
   </div>
 
@@ -199,20 +208,20 @@
     text-shadow: 2px 2px 5px black;
   }
 
+  button {
+    color: black;
+    background: var(--gold-color);
+    outline: 4px solid var(--dark-gold-color);
+  }
+
+  button:hover {
+    outline-color: var(--nether-accent-color);
+  }
+
   div.info > button {
     margin-top: .2em;
     padding: 0 .2em;
     font-size: 2em;
-    color: black;
-    background: var(--gold-color);
-    border: none;
-    outline: 4px solid var(--dark-gold-color);
-    appearance: none;
-    cursor: pointer;
-  }
-
-  div.info > button:hover {
-    outline-color: var(--nether-accent-color);
   }
 
   span.error {
@@ -225,6 +234,10 @@
     gap: 1.5em;
     width: 40vw;
     margin: 10vh 5vw 0 0;
+  }
+
+  #ensContent > button {
+    padding: .5em 1em;
   }
 	
 </style>

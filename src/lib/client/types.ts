@@ -16,5 +16,6 @@ export interface WorldInfo {
 // Local World Interface:
 export interface LocalWorldInfo {
   name: string
+  dir: string
   imageSrc: string
 }

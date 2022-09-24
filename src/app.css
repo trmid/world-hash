@@ -37,6 +37,21 @@ html, body {
   display: none;
 }
 
+input, button {
+	font: inherit;
+	background: none;
+	border: none;
+	appearance: none;
+}
+
+button {
+	cursor: pointer;
+}
+
+input:focus, button:focus {
+	outline: none;
+}
+
 .hide {
 	display: none !important;
 }
