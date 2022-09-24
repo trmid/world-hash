@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
 import { GET as GETWorldCatalog } from '../+server';
-import { apiCall, isValidCID } from '$lib/shared/ipfs';
+import { apiCall, isValidCID } from '$lib/server/ipfs';
 import { getSavesDir } from '$lib/server/minecraft';
 import { join } from "path";
 import * as fs from "fs/promises";
@@ -29,7 +29,7 @@ export const POST: RequestHandler = async (req) => {
   if(!worldInfo) throw error(500, "could not find world hash CID in catalog");
 
   // Check if valid CID:
-  if(!await isValidCID(params.worldHashCID)) throw error(500, `invalid CID: ${params.worldHashCID}`);
+  if(!await isValidCID(params.worldHashCID)) throw error(400, `invalid CID: ${params.worldHashCID}`);
 
   // Create node LMN filepath:
   const worldLMNPath = `/world-hash/worlds/${params.worldHashCID}`;

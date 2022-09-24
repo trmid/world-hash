@@ -1,7 +1,7 @@
 import type { RequestHandler } from './$types';
 import { error, json } from '@sveltejs/kit';
 import { ethers } from 'ethers';
-import { ipfsFetch, isValidCID } from '$lib/shared/ipfs';
+import { ipfsFetch, isValidCID } from '$lib/server/ipfs';
 import { isValidWorldInfo, type WorldInfo } from '$lib/shared/world';
 
 /**

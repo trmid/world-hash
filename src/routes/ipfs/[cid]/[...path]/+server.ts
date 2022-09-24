@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { error } from '@sveltejs/kit';
-import { ipfsFetch, isValidCID } from '$lib/shared/ipfs';
+import { ipfsFetch, isValidCID } from '$lib/server/ipfs';
 
 /**
  * GET
