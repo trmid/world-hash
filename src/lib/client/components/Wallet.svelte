@@ -13,7 +13,8 @@
   export let ensInstance: ENS;
   export let chainID: string | undefined = undefined;
   export let address: string | undefined = undefined;
-  export let ens: ENSDomain | undefined = 'ncookie.eth'; // <TODO> change back to undefined
+  // export let ens: ENSDomain | undefined = undefined;
+  export let ens: ENSDomain | undefined = 'ncookie.eth'; // <TODO> remove placeholder
   let connecting: boolean = false;
 
   // Function to check wallet chain ID:
@@ -123,7 +124,7 @@
     width: 33em;
   }
 
-  #connectWallet {
+  #wallet > button {
     padding: .3em 1em;
     color: black;
     font: inherit;
@@ -133,7 +134,7 @@
     appearance: none;
   }
 
-  #connectWallet:hover {
+  #wallet > button:hover {
     border-color: var(--nether-accent-color);
   }
 

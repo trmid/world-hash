@@ -9,9 +9,26 @@ export const resolveENS = async (ens: ENSDomain) => {
   const response = await fetch(`/world/resolve/ens/${encodeURI(ens)}`);
   if(response.ok) {
     const jsonFile = (await response.json()) as { cid: string, worlds: Record<string, WorldInfo> };
-    return jsonFile.worlds;
+    return jsonFile.worlds ?? {};
   } else {
     throw new Error('Could not resolve ENS domain.');
+  }
+}
+
+/* ========================================================================================================================================================================= */
+
+// Function to resolve IPFS CID to worlds:
+export const resolveIPFS = async (cid: string) => {
+  const response = await fetch(`/world/resolve/ipfs/${encodeURI(cid)}`);
+  if(response.ok) {
+    const jsonFile = (await response.json()) as { cid: string, worlds: Record<string, WorldInfo> };
+    return jsonFile.worlds ?? {};
+  } else {
+    if(response.status === 400) {
+      throw new Error('Invalid IPFS CID.');
+    } else {
+      throw new Error('Could not resolve IPFS CID.');
+    }
   }
 }
 

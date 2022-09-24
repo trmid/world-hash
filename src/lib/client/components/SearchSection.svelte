@@ -1,7 +1,7 @@
 <script lang="ts">
 
 	// Imports:
-  import { resolveENS } from '$lib/client/functions';
+  import { resolveENS, resolveIPFS } from '$lib/client/functions';
   import Title from '$lib/client/components/Title.svelte';
   import WorldDisplay from '$lib/client/components/WorldDisplay.svelte';
 
@@ -9,7 +9,7 @@
   import type { ENSDomain, WorldInfo } from '$lib/client/types';
 
   // Type Initializations:
-  type LoadingStatus = 'none' | 'invalidENS' | 'resolvingENS' | 'resolvingIPFS' | 'done' | 'beef';
+  type LoadingStatus = 'none' | 'invalidENS' | 'invalidIPFS' | 'resolvingENS' | 'resolvingIPFS' | 'done' | 'beef';
 
   // Initializations:
   const searchPlaceholder: string = 'Search for an ENS domain or IPFS hash...';
@@ -34,31 +34,30 @@
     if(searchText && status !== 'resolvingENS' && status !== 'resolvingIPFS') {
       worlds = {};
       if(searchText.endsWith('.eth')) {
-        status = 'resolvingENS';
-        ens = searchText as ENSDomain;
-        try {
-          worlds = {
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2c': { name: 'ETHCraft', timestamp: 1663884267, creator: 'ncookie.eth' },
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2a': { name: 'TestWorld', timestamp: 1663834267, creator: 'ncookie.eth' },
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2b': { name: 'MuhPiggies', timestamp: 1663884067, creator: 'ncookie.eth' },
-            'bafybeiafpw6e5thyg5c44yrsxnlbxrhbdtdewlcoxx7tm57adbpraifl2e': { name: 'Ok Then', timestamp: 1663184267, creator: 'ncookie.eth' }
+        if(searchText.length > 4) {
+          status = 'resolvingENS';
+          try {
+            worlds = await resolveENS(searchText as ENSDomain);
+            status = 'done';
+          } catch(beef) {
+            console.error(beef);
+            status = 'beef';
           }
-          // <TODO> replace placeholders with actual function
-          // worlds = await resolveENS(ens);
-          status = 'done';
-        } catch(beef) {
-          console.error(beef);
-          status = 'beef';
+        } else {
+          status = 'invalidENS';
         }
       } else {
-        // <TODO> need ipfs hash validation
         status = 'resolvingIPFS';
         try {
-          // <TODO> resolve IPFS hash
+          worlds = await resolveIPFS(searchText);
           status = 'done';
-        } catch(beef) {
+        } catch(beef: any) {
           console.error(beef);
-          status = 'beef';
+          if(beef.message.includes('Invalid')) {
+            status = 'invalidIPFS';
+          } else {
+            status = 'beef';
+          }
         }
       }
     }
@@ -92,6 +91,12 @@
     {:else if status === 'resolvingIPFS'}
       <span>Resolving worlds from IPFS...</span>
       <img class="spin" src="/images/pickaxe.png" alt="Spinning Pickaxe">
+    {:else if status === 'invalidENS'}
+      <span class="error">This doesn't seem to be a valid ENS domain</span>
+      <img src="/images/beef.png" alt="Beef">
+    {:else if status === 'invalidIPFS'}
+      <span class="error">This doesn't seem to be a valid IPFS CID</span>
+      <img src="/images/beef.png" alt="Beef">
     {:else if status === 'beef'}
       <span class="error">Could not find any worlds</span>
       <img src="/images/beef.png" alt="Beef">
@@ -100,9 +105,9 @@
 
   <!-- TODO - need cool from-side animation for each item -->
   <!-- Worlds Display -->
-  {#if worldIDs.length > 0}
+  {#if status === 'done'}
     <div id="worlds">
-      <h3>Found {worldIDs.length.toLocaleString()} worlds</h3>
+      <h3>Found {worldIDs.length.toLocaleString()} world{worldIDs.length === 1 ? '' : 's'}</h3>
       {#each worldIDs as id}
         <WorldDisplay {ens} {id} world={worlds[id]} />
       {/each}
@@ -151,31 +156,18 @@
 
   #search > input {
     flex: 1;
-    padding: .5em;
-    font: inherit;
+    padding: .5em 3em;
     text-align: center;
-    background: none;
-    border: none;
-    appearance: none;
   }
 
   #search > button {
     position: absolute;
     right: 0;
     padding: .5em 1em;
-    font: inherit;
-    background: none;
-    border: none;
-    appearance: none;
-    cursor: pointer;
   }
 
   #search > button.potionOfInvisibility {
     color: transparent;
-  }
-
-  input:focus, button:focus {
-    outline: none;
   }
 
   #loading {

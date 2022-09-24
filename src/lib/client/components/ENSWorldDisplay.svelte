@@ -101,10 +101,6 @@
     padding: .2em;
     color: black;
     font-size: 1.5em;
-    background: none;
-    border: none;
-    appearance: none;
-    cursor: pointer;
   }
 
   button.delete:hover {

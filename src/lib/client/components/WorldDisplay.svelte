@@ -118,10 +118,6 @@
   button.download {
     padding: .2em;
     font-size: 1.5em;
-    background: none;
-    border: none;
-    appearance: none;
-    cursor: pointer;
   }
 
   button.download:hover {
