@@ -64,7 +64,7 @@
   <span class="date">{date.toLocaleString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
 
   <!-- Download Button -->
-  <button class="download" on:click={downloadWorld} disabled={downloadStatus !== 'none'}>
+  <button class="download" on:click={downloadWorld} title="Download World" disabled={downloadStatus !== 'none'}>
     {#if downloadStatus === 'done'}
       <i class="icofont-ui-check" />
     {:else if downloadStatus === 'beef'}
@@ -139,6 +139,10 @@
   button.download > img {
     height: 1.5em;
     width: 1.5em;
+  }
+
+  button:disabled {
+    cursor: auto;
   }
 	
 </style>

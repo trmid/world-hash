@@ -9,6 +9,7 @@
 
   // Initializations:
   export let provider: ethers.providers.JsonRpcProvider | undefined = undefined;
+  export let signer: ethers.providers.JsonRpcSigner | undefined = undefined;
   export let chainID: string | undefined = undefined;
   export let address: string | undefined = undefined;
   export let ens: ENSDomain | undefined = undefined;
@@ -30,6 +31,8 @@
       const accounts: string[] = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       if(accounts.length > 0) {
         address = accounts[0];
+        let tempWalletProvider = new ethers.providers.Web3Provider((window as any).ethereum);
+        signer = tempWalletProvider.getSigner();
         await checkENS();
       } else {
         address = undefined;

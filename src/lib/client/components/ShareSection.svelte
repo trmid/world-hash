@@ -1,8 +1,9 @@
 <script lang="ts">
 
 	// Imports:
-  import type { ethers } from 'ethers'; // <TODO> change back to non-type import
+  import { ethers } from 'ethers';
   import { onMount } from 'svelte';
+  import { resolverABI } from '$lib/client/ABIs';
   import { getLocalWorlds, resolveENS, shareWorldCatalog, shareWorld } from '$lib/client/functions';
   import Title from '$lib/client/components/Title.svelte';
   import Wallet from '$lib/client/components/Wallet.svelte';
@@ -17,19 +18,21 @@
 
   // Initializations:
   let provider: ethers.providers.JsonRpcProvider | undefined;
+  let signer: ethers.providers.JsonRpcSigner | undefined;
   let localWorlds: LocalWorldInfo[] = [];
   let fileStatus: LoadingStatus = 'none';
   let ensResolutionStatus: LoadingStatus = 'none';
   let ipfsShareStatus: LoadingStatus = 'none';
   let txStatus: LoadingStatus = 'none';
   let ens: ENSDomain | undefined = undefined;
-  let ensContent: MinecraftJSON | undefined = undefined;
+  let ensContent: MinecraftJSON = { worlds: {} };
+  let worldIDs: string[] = [];
   let newWorldIDs = new Set<string>();
   let catalogCID: string | undefined = undefined;
+  let ensContentChanged: boolean = false;
 
   // Reactive ENS Contents:
   $: ens, resolveENSContent();
-  $: ensWorldIDs = ensContent ? Object.keys(ensContent.worlds) : [];
 
   // Function to scroll to top of page:
   const scrollUp = () => {
@@ -43,13 +46,7 @@
   const readLocalWorldFiles = async () => {
     fileStatus = 'loading';
     try {
-      localWorlds = [
-        { name: 'My Test World', dir: 'something', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
-        { name: 'MuhCows', dir: 'something', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' },
-        { name: 'ETHCraft', dir: 'something', imageSrc: 'https://assets.reedpopcdn.com/pack__1_.png/BROK/resize/1200x1200%3E/format/jpg/quality/70/pack__1_.png' }
-      ];
-      // <TODO> remove placeholders and add actual function
-      // localWorlds = await getLocalWorlds();
+      localWorlds = await getLocalWorlds();
       fileStatus = 'done';
     } catch(beef) {
       console.error(beef);
@@ -72,6 +69,7 @@
         }
         // <TODO> replace placeholders with actual function
         // ensContent = await resolveENS(ens);
+        Object.keys(ensContent.worlds).forEach(cid => worldIDs.push(cid));
         ensResolutionStatus = 'done';
       } catch(beef) {
         console.error(beef);
@@ -88,47 +86,85 @@
 
   // Function to update IPFS:
   const updateIPFS = async () => {
-    if(ensContent && catalogCID === undefined) {
-      ipfsShareStatus = 'loading';
-      try {
-        catalogCID = await shareWorldCatalog(ensContent);
+    ipfsShareStatus = 'loading';
+    try {
+      setTimeout(() => {
+        catalogCID = 'QmWpqe6a5b7kL5JSEx5582Di1rZhPMHGryojXPQgE33qDY';
         ipfsShareStatus = 'done';
-      } catch(beef) {
-        console.error(beef);
-        ipfsShareStatus = 'beef';
-      }
+      }, 2000);
+      // <TODO> replace placeholder with actual function
+      // catalogCID = await shareWorldCatalog(ensContent);
+      // ipfsShareStatus = 'done';
+    } catch(beef) {
+      console.error(beef);
+      ipfsShareStatus = 'beef';
     }
   }
 
   // Function to update ENS:
   const updateENS = async () => {
-    if(ensContent) {
-      // <TODO>
+    if(provider && signer && ens && catalogCID) {
+      txStatus = 'loading';
+      try {
+        const resolver = await provider.getResolver(ens);
+        if(resolver) {
+          const nameHash = ethers.utils.namehash(ens);
+          let resolverContract = new ethers.Contract(resolver.address, resolverABI, signer);
+          let tx = await resolverContract.setText(nameHash, 'minecraft', catalogCID);
+          let receipt = await tx.wait();
+          if(receipt.status) {
+            txStatus = 'done';
+            ensContentChanged = false;
+          } else {
+            console.error('Transaction to update ENS failed.');
+            txStatus = 'beef';
+          }
+        } else {
+          console.error(`No resolver found for ENS domain: ${ens}`);
+          txStatus = 'beef';
+        }
+      } catch(beef) {
+        console.error(beef);
+        txStatus = 'beef';
+      }
+    } else if(provider === undefined) {
+      console.error('No provider set for ENS update.');
+      txStatus = 'beef';
+    } else if(signer === undefined) {
+      console.error('No signer set for ENS update.');
+      txStatus = 'beef';
+    } else if(ens === undefined) {
+      console.error('No ENS detected for ENS update.');
+      txStatus = 'beef';
+    } else {
+      console.error('No world catalog CID found for ENS update.');
+      txStatus = 'beef';
     }
   }
 
   // Function to get world hash for newly shared world:
   const getWorldHash = async (world: LocalWorldInfo) => {
-    if(ensContent && ens) {
+    if(ens) {
       const worldHash = await shareWorld(world.dir);
       const name = world.name;
       const timestamp = Date.now() / 1000;
       const creator = ens;
       ensContent.worlds[worldHash] = { name, timestamp, creator };
+      ensContentChanged = true;
+      worldIDs.push(worldHash);
       newWorldIDs.add(worldHash);
-      catalogCID = undefined;
     }
   }
 
   // Function to remove world hash from ENS content:
   const hideWorld = async (cid: string) => {
-    if(ensContent && ensContent.worlds[cid]) {
+    if(ensContent.worlds[cid]) {
       delete ensContent.worlds[cid];
-      catalogCID = undefined;
+      worldIDs = worldIDs.filter(id => id !== cid);
+      ensContentChanged = true;
     }
     if(newWorldIDs.has(cid)) {
       newWorldIDs.delete(cid);
-      catalogCID = undefined;
     }
   }
 
@@ -147,48 +183,40 @@
   
   <!-- Header -->
   <Title preset="corner" />
-D
+
   <!-- Wallet Connection -->
-  <Wallet bind:provider bind:ens />
+  <Wallet bind:provider bind:signer bind:ens />
 
   <!-- Main Content -->
   <div class="content">
 
     <!-- Local Worlds Display -->
-    {#if fileStatus === 'done' && ens}
+    {#if ens}
       <div id="localWorlds">
         <div class="info">
-          <h3>Found {localWorlds.length.toLocaleString()} local worlds</h3>
-          <button on:click={readLocalWorldFiles}><i class="icofont-loop" /></button>
+          <h3>Found {localWorlds.length.toLocaleString()} local world{localWorlds.length === 1 ? '' : 's'}</h3>
+          <button on:click={readLocalWorldFiles} title="Re-Fetch Local Worlds"><i class="icofont-loop" /></button>
         </div>
         {#each localWorlds as world}
           <LocalWorldDisplay onShare={getWorldHash} {world} />
         {/each}
       </div>
-    {:else if fileStatus === 'loading'}
-      <div id="loadingLocalWorlds">
-        <span>Reading local worlds...</span>
-        <img class="spin" src="/images/book.png" alt="Spinning Book">
-      </div>
-    {:else if fileStatus === 'beef'}
-      <div id="localWorldsError">
-        <span class="error">Could not read local world files</span>
-        <img src="/images/beef.png" alt="Beef">
-      </div>
     {/if}
 
     <!-- ENS Content -->
-    {#if ensResolutionStatus === 'done' && ens && ensContent}
+    {#if ens}
       <div id="ensContent">
         <h3>Your ENS content</h3>
-        {#if ensWorldIDs.length > 0}
-          {#each ensWorldIDs as id}
+        {#if worldIDs.length > 0}
+          {#each worldIDs as id}
             <ENSWorldDisplay onThrowWorldInLava={hideWorld} {id} world={ensContent.worlds[id]} />
           {/each}
+        {:else if ensResolutionStatus === 'loading'}
+          <span>Loading your ENS contents...</span>
         {:else}
           <span>You don't seem to have any worlds up on ENS yet!</span>
         {/if}
-        <button on:click={updateWorlds} disabled={ipfsShareStatus === 'loading' || txStatus === 'loading'}>
+        <button on:click={updateWorlds} disabled={!ensContentChanged || ipfsShareStatus === 'loading' || txStatus === 'loading'}>
           {#if ipfsShareStatus === 'loading'}
             Sharing on IPFS...
           {:else if txStatus === 'loading'}
@@ -267,18 +295,19 @@ D
     outline: 4px solid var(--dark-gold-color);
   }
 
-  button:hover {
+  button:hover:not(:disabled) {
     outline-color: var(--nether-accent-color);
+  }
+
+  button:disabled {
+    filter: grayscale(.7) brightness(.7);
+    cursor: auto;
   }
 
   div.info > button {
     margin-top: .2em;
     padding: 0 .2em;
     font-size: 2em;
-  }
-
-  span.error {
-    color: red;
   }
 
   #ensContent {

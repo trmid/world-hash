@@ -10,6 +10,8 @@ export const resolveENS = async (ens: ENSDomain) => {
   if(response.ok) {
     const jsonFile = (await response.json()) as { cid: string, data: MinecraftJSON };
     return jsonFile.data ?? {};
+  } else if(response.status === 404) {
+    throw new Error('No worlds found on ENS domain.');
   } else {
     throw new Error('Could not resolve ENS domain.');
   }
@@ -23,12 +25,10 @@ export const resolveIPFS = async (cid: string) => {
   if(response.ok) {
     const jsonFile = (await response.json()) as { cid: string, data: MinecraftJSON };
     return jsonFile.data ?? {};
+  } else if(response.status === 400) {
+    throw new Error('Invalid IPFS CID.');
   } else {
-    if(response.status === 400) {
-      throw new Error('Invalid IPFS CID.');
-    } else {
-      throw new Error('Could not resolve IPFS CID.');
-    }
+    throw new Error('Could not resolve IPFS CID.');
   }
 }
 

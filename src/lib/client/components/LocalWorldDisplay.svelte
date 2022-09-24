@@ -20,7 +20,7 @@
   <span class="worldName">{world.name}</span>
 
   <!-- Share Checkbox -->
-  <button class="share" on:click={() => onShare(world)}><i class="icofont-plus" /></button>
+  <button class="share" on:click={() => onShare(world)} title="Share World"><i class="icofont-plus" /></button>
 
 </div>
 
