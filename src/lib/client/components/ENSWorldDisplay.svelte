@@ -1,13 +1,17 @@
 <script lang="ts">
 
   // Type Imports:
-  import type { WorldInfo } from '$lib/client/types';
+  import type { ENSDomain, WorldInfo } from '$lib/client/types';
 
   // Initializations:
+  export let ens: ENSDomain | undefined;
   export let id: string;
   export let world: WorldInfo;
   export let isNew: boolean;
   export let onThrowWorldInLava: Function;
+  export let onChangeCreator: Function;
+  let changingCreator: boolean = false;
+  let newCreator: string = `${world.creator}`;
 
   // Reactive Date:
   $: date = new Date(world.timestamp * 1000);
@@ -26,6 +30,18 @@
     <div class="idsWrapper">
       <span class="worldName">{world.name}</span>
       <span class="worldHash">{id}</span>
+      <span class="creator">
+        Created by 
+        {#if changingCreator}
+          <form on:submit|preventDefault={() => { onChangeCreator(id, newCreator); changingCreator = false; }}>
+            <input type="text" bind:value={newCreator} spellcheck="false">
+            <button type="submit">></button>
+          </form>
+        {:else}
+          {ens === world.creator ? 'you' : world.creator}
+          <i class="icofont-edit" on:click={() => changingCreator = true} />
+        {/if}
+      </span>
     </div>
   </div>
 
@@ -85,6 +101,28 @@
     word-wrap: break-word;
     max-height: 1.9em;
     opacity: .6;
+  }
+
+  span.creator form {
+    display: inline-flex;
+    height: 1em;
+  }
+
+  span.creator input {
+    color: black;
+    border-bottom: 2px solid var(--dark-gold-color);
+  }
+
+  span.creator button {
+    color: black;
+  }
+
+  span.creator i {
+    cursor: pointer;
+  }
+
+  span.creator i:hover {
+    color: var(--nether-accent-color);
   }
 
   span.date {

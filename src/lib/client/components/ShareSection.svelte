@@ -160,6 +160,14 @@
     }
   }
 
+  // Function to update world creator:
+  const updateNotch = (cid: string, newCreator: string) => {
+    if(ensContent.worlds[cid]) {
+      ensContent.worlds[cid].creator = newCreator;
+      ensContentChanged = true;
+    }
+  }
+
   onMount(async () => {
     readLocalWorldFiles();
   });
@@ -201,7 +209,7 @@
         <h3>Your ENS content</h3>
         {#if worldIDs.length > 0}
           {#each worldIDs as id}
-            <ENSWorldDisplay onThrowWorldInLava={hideWorld} {id} world={ensContent.worlds[id]} isNew={newWorldIDs.has(id)} />
+            <ENSWorldDisplay onThrowWorldInLava={hideWorld} onChangeCreator={updateNotch} {ens} {id} world={ensContent.worlds[id]} isNew={newWorldIDs.has(id)} />
           {/each}
         {:else if ensResolutionStatus === 'loading'}
           <span>Loading your ENS contents...</span>
