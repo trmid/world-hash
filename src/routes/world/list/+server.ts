@@ -31,7 +31,7 @@ export const GET: RequestHandler = async () => {
         // Push world to list:
         worlds.push({
           name: filename,
-          imageSrc: join(savesDir, filename, "icon.png")
+          imageSrc: `world/saved/${filename}/icon`
         });
       }
     }
