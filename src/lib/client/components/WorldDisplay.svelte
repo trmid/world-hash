@@ -140,9 +140,5 @@
     height: 1.5em;
     width: 1.5em;
   }
-
-  button:disabled {
-    cursor: auto;
-  }
 	
 </style>

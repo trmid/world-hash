@@ -48,6 +48,10 @@ button {
 	cursor: pointer;
 }
 
+button:disabled {
+	cursor: auto;
+}
+
 input:focus, button:focus {
 	outline: none;
 }

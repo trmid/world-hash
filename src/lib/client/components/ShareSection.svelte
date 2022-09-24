@@ -30,6 +30,7 @@
   let newWorldIDs = new Set<string>();
   let catalogCID: string | undefined = undefined;
   let ensContentChanged: boolean = false;
+  let localWorldsLoading: string[] = [];
 
   // Reactive ENS Contents:
   $: ens, resolveENSContent();
@@ -60,7 +61,7 @@
       ensResolutionStatus = 'loading';
       try {
         ensContent = await resolveENS(ens);
-        Object.keys(ensContent.worlds).forEach(cid => worldIDs.push(cid));
+        Object.keys(ensContent.worlds).forEach(cid => worldIDs = [...worldIDs, cid]);
         ensResolutionStatus = 'done';
       } catch(beef) {
         console.error(beef);
@@ -131,14 +132,16 @@
   // Function to get world hash for newly shared world:
   const getWorldHash = async (world: LocalWorldInfo) => {
     if(ens) {
+      localWorldsLoading = [...localWorldsLoading, world.dir];
       const worldHash = await shareWorld(world.dir);
       const name = world.name;
       const timestamp = Date.now() / 1000;
       const creator = ens;
       ensContent.worlds[worldHash] = { name, timestamp, creator };
       ensContentChanged = true;
-      worldIDs.push(worldHash);
+      worldIDs = [...worldIDs, worldHash];
       newWorldIDs.add(worldHash);
+      localWorldsLoading = localWorldsLoading.filter(dir => dir !== world.dir);
     }
   }
 
@@ -184,7 +187,7 @@
           <button on:click={readLocalWorldFiles} title="Re-Fetch Local Worlds"><i class="icofont-loop" /></button>
         </div>
         {#each localWorlds as world}
-          <LocalWorldDisplay onShare={getWorldHash} {world} />
+          <LocalWorldDisplay loading={localWorldsLoading.includes(world.dir)} onShare={getWorldHash} {world} />
         {/each}
       </div>
     {/if}
@@ -202,7 +205,7 @@
         {:else}
           <span>You don't seem to have any worlds up on ENS yet!</span>
         {/if}
-        <button on:click={updateWorlds} disabled={!ensContentChanged || ipfsShareStatus === 'loading' || txStatus === 'loading'}>
+        <button on:click={updateWorlds} disabled={!ensContentChanged || worldIDs.length === 0 || ipfsShareStatus === 'loading' || txStatus === 'loading'}>
           {#if ipfsShareStatus === 'loading'}
             Sharing on IPFS...
           {:else if txStatus === 'loading'}
@@ -287,7 +290,6 @@
 
   button:disabled {
     filter: grayscale(.7) brightness(.7);
-    cursor: auto;
   }
 
   div.info > button {

@@ -5,6 +5,7 @@
 
   // Initializations:
   export let world: LocalWorldInfo;
+  export let loading: boolean;
   export let onShare: Function;
 	
 </script>
@@ -20,7 +21,13 @@
   <span class="worldName">{world.name}</span>
 
   <!-- Share Checkbox -->
-  <button class="share" on:click={() => onShare(world)} title="Share World"><i class="icofont-plus" /></button>
+  <button class="share" on:click={() => onShare(world)} title="Share World" disabled={loading}>
+    {#if loading}
+      <img class="spin" src="/images/pickaxe.png" alt="Spinning Pickaxe">
+    {:else}
+      <i class="icofont-plus" />
+    {/if}
+  </button>
 
 </div>
 
@@ -63,6 +70,11 @@
 
   button.share:hover {
     color: var(--nether-accent-color);
+  }
+
+  button.share > img {
+    height: 1.5em;
+    width: 1.5em;
   }
 	
 </style>
