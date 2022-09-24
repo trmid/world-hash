@@ -58,6 +58,9 @@
   // Function to read content on ENS:
   const resolveENSContent = async () => {
     if(ens) {
+      ensContentChanged = false;
+      worldIDs = [];
+      newWorldIDs.clear();
       ensResolutionStatus = 'loading';
       try {
         ensContent = await resolveENS(ens);
@@ -101,7 +104,7 @@
           let receipt = await tx.wait();
           if(receipt.status) {
             txStatus = 'done';
-            ensContentChanged = false;
+            await resolveENSContent();
           } else {
             console.error('Transaction to update ENS failed.');
             txStatus = 'beef';
@@ -198,7 +201,7 @@
         <h3>Your ENS content</h3>
         {#if worldIDs.length > 0}
           {#each worldIDs as id}
-            <ENSWorldDisplay onThrowWorldInLava={hideWorld} {id} world={ensContent.worlds[id]} />
+            <ENSWorldDisplay onThrowWorldInLava={hideWorld} {id} world={ensContent.worlds[id]} isNew={newWorldIDs.has(id)} />
           {/each}
         {:else if ensResolutionStatus === 'loading'}
           <span>Loading your ENS contents...</span>

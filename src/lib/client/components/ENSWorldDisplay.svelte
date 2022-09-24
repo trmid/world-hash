@@ -6,6 +6,7 @@
   // Initializations:
   export let id: string;
   export let world: WorldInfo;
+  export let isNew: boolean;
   export let onThrowWorldInLava: Function;
 
   // Reactive Date:
@@ -29,7 +30,7 @@
   </div>
 
   <!-- Date -->
-  <span class="date">{date.toLocaleString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
+  <span class="date" class:isNew>{date.toLocaleString(undefined, {month: 'short', day: 'numeric', year: 'numeric'})}</span>
 
   <!-- Delete Button -->
   <button class="delete" on:click={() => onThrowWorldInLava(id)} title="Throw World In Lava"><i class="icofont-trash" /></button>
@@ -84,6 +85,23 @@
     word-wrap: break-word;
     max-height: 1.9em;
     opacity: .6;
+  }
+
+  span.date {
+    position: relative;
+    isolation: isolate;
+  }
+
+  span.date.isNew::after {
+    content: 'new';
+    position: absolute;
+    inset: 0;
+    margin-top: -.5em;
+    text-align: center;
+    font-size: 3em;
+    opacity: .1;
+    rotate: -10deg;
+    z-index: -1;
   }
 
   button.delete {
