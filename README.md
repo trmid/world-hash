@@ -46,7 +46,7 @@ There are many improvements that can be made to World Hash, including the follow
 
 - Executable package for multiple operating systems.
 - Launch button for Minecraft.
-- Adding ENS subdomain support.
+- Adding non-primary ENS domain support.
 - Adding further IPFS node managament options.
 - Improved UI/UX.
 
