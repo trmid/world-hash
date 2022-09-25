@@ -100,7 +100,7 @@
         if(resolver) {
           const nameHash = ethers.utils.namehash(ens);
           let resolverContract = new ethers.Contract(resolver.address, resolverABI, signer);
-          let tx = await resolverContract.setText(nameHash, 'minecraft', catalogCID);
+          let tx = await resolverContract.setText(nameHash, 'minecraft', `ipfs://${catalogCID}`);
           let receipt = await tx.wait();
           if(receipt.status) {
             txStatus = 'done';
@@ -138,7 +138,7 @@
       localWorldsLoading = [...localWorldsLoading, world.dir];
       const worldHash = await shareWorld(world.dir);
       const name = world.name;
-      const timestamp = Date.now() / 1000;
+      const timestamp = Math.floor(Date.now() / 1000);
       const creator = ens;
       ensContent.worlds[worldHash] = { name, timestamp, creator };
       ensContentChanged = true;
