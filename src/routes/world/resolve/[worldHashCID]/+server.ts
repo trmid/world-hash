@@ -66,7 +66,7 @@ export const POST: RequestHandler = async (req) => {
       const lsRes = await ipfs.ls(LMNPath);
 
       // Copy each child file/dir:
-      const filenames = (await lsRes.json()).Entries.map((x: any) => x.Name);
+      const filenames = (await lsRes.json()).Entries?.map((x: any) => x.Name) ?? [];
       for(const filename of filenames) {
         await copyFromNode(LMNPath + "/" + filename, join(localPath, filename));
       }
@@ -92,7 +92,9 @@ export const POST: RequestHandler = async (req) => {
   if(!savesDir) throw error(500, "could not find minecraft saves directory");
   try {
     const standardizedCID = await ipfs.formatCID(params.worldHashCID);
-    const localWorldDir = join(savesDir, `${standardizedCID.slice(0, 8)}-${new Date(Date.now()).toISOString().replaceAll(":", "-")}`);
+    const now = Date.now();
+    const today = new Date(now);
+    const localWorldDir = join(savesDir, `${standardizedCID.slice(0, 8)}-${today.getFullYear()}-${today.getMonth()}-${today.getDay()}-${Math.floor(now / (1000)) % (60 * 60 * 24)}`);
     await copyFromNode(worldLMNPath, localWorldDir);
   } catch(err) {
     console.error(err);
