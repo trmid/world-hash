@@ -22,7 +22,8 @@ export const GET: RequestHandler = async ({ params }) => {
     const resolver = await provider.getResolver(params.id);
     const worldHashContent = await resolver?.getText("minecraft");
     if(!worldHashContent) throw error(404, `Could not resolve ENS minecraft field for name: ${params.id}`);
-    cid = worldHashContent;
+    const uriMatch = worldHashContent.match(/^(\/ipfs\/|ipfs\:\/\/)(.+)/);
+    cid = uriMatch ? uriMatch[2] : worldHashContent;
   }
   // Handle IPFS identifiers:
   else if(params.protocol.match(/^ipfs$/i)) {
