@@ -31,11 +31,11 @@ export const POST: RequestHandler = async (req) => {
 
   // Initialize status:
   const statusID = getStatusID(params);
-  console.log(statusMap.get(statusID));
   statusMap.set(statusID, {
     status: "Resolving World...",
     progress: 0.1
   });
+  console.log(statusMap.get(statusID));
 
   // Check if valid CID:
   if(!await ipfs.isValidCID(params.worldHashCID)) throw error(400, `invalid CID: ${params.worldHashCID}`);
@@ -79,11 +79,11 @@ export const POST: RequestHandler = async (req) => {
       bytesCopied += view.byteLength;
 
       // Update status:
-      console.log(statusMap.get(statusID));
       statusMap.set(statusID, {
         status: "Copying World Files...",
         progress: 0.6 + 0.4 * (bytesCopied / totalBytes)
       });
+      console.log(statusMap.get(statusID));
     }
   };
 
@@ -99,14 +99,12 @@ export const POST: RequestHandler = async (req) => {
     throw error(500, "failed to copy world files from node to minecraft saves");
   }
 
-  
-
   // Update status:
-  console.log(statusMap.get(statusID));
   statusMap.set(statusID, {
     status: "Done!",
     progress: 1
   });
+  console.log(statusMap.get(statusID));
 
   // Return success:
   return new Response("world resolved!", { status: 200 });
