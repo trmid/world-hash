@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
   // Save json records to IPFS files:
   try {
     const date = new Date(Date.now());
-    await cp(`/ipfs/${cid}`, `/world-hash/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${cid}.json`);
+    await cp(`/ipfs/${cid}`, `/world-hash/${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}/${cid}.json`);
   } catch(err) {
     console.error(err);
   }
