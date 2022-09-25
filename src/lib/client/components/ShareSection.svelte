@@ -19,6 +19,7 @@
   // Initializations:
   let provider: ethers.providers.JsonRpcProvider | undefined;
   let signer: ethers.providers.JsonRpcSigner | undefined;
+  let chainID: string | undefined;
   let localWorlds: LocalWorldInfo[] = [];
   let fileStatus: LoadingStatus = 'none';
   let ensResolutionStatus: LoadingStatus = 'none';
@@ -93,6 +94,28 @@
 
   // Function to update ENS:
   const updateENS = async () => {
+    if(provider && signer && chainID && ens && catalogCID) {
+      if(chainID !== '0x1') {
+        await (window as any).ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x1' }] });
+      }
+      await ensTransaction();
+    } else if(provider === undefined) {
+      console.error('No provider set for ENS update.');
+      txStatus = 'beef';
+    } else if(signer === undefined) {
+      console.error('No signer set for ENS update.');
+      txStatus = 'beef';
+    } else if(ens === undefined) {
+      console.error('No ENS detected for ENS update.');
+      txStatus = 'beef';
+    } else {
+      console.error('No world catalog CID found for ENS update.');
+      txStatus = 'beef';
+    }
+  }
+
+  // Function to transact on-chain to update ENS:
+  const ensTransaction = async () => {
     if(provider && signer && ens && catalogCID) {
       txStatus = 'loading';
       try {
@@ -117,18 +140,6 @@
         console.error(beef);
         txStatus = 'beef';
       }
-    } else if(provider === undefined) {
-      console.error('No provider set for ENS update.');
-      txStatus = 'beef';
-    } else if(signer === undefined) {
-      console.error('No signer set for ENS update.');
-      txStatus = 'beef';
-    } else if(ens === undefined) {
-      console.error('No ENS detected for ENS update.');
-      txStatus = 'beef';
-    } else {
-      console.error('No world catalog CID found for ENS update.');
-      txStatus = 'beef';
     }
   }
 
@@ -207,7 +218,7 @@
   <Title preset="corner" />
 
   <!-- Wallet Connection -->
-  <Wallet bind:provider bind:signer bind:ens />
+  <Wallet bind:provider bind:signer bind:chainID bind:ens />
 
   <!-- Main Content -->
   <div class="content">

@@ -31,7 +31,7 @@
       const accounts: string[] = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       if(accounts.length > 0) {
         address = accounts[0];
-        let tempWalletProvider = new ethers.providers.Web3Provider((window as any).ethereum);
+        let tempWalletProvider = new ethers.providers.Web3Provider((window as any).ethereum, 1);
         signer = tempWalletProvider.getSigner();
         await checkENS();
       } else {
@@ -72,7 +72,7 @@
   onMount(async () => {
 
     // Initializing Provider:
-    provider = new ethers.providers.JsonRpcProvider(rpcURL);
+    provider = new ethers.providers.JsonRpcProvider(rpcURL, 1);
 
     // Event handlers:
     if(typeof (window as any).ethereum !== 'undefined') {
