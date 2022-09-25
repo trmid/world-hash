@@ -7,6 +7,7 @@
   export let world: LocalWorldInfo;
   export let loading: boolean;
   export let onShare: Function;
+  let icon: string = `${world.imageSrc}`;
 	
 </script>
 
@@ -15,7 +16,7 @@
 <div class="wrapper">
 
   <!-- World Icon -->
-  <img class="icon" src="{world.imageSrc}" alt="World Icon">
+  <img class="icon" src="{icon}" alt="World Icon" on:error={() => icon = '/images/dirt_block.png'}>
 
   <!-- World Name -->
   <span class="worldName">{world.name}</span>
