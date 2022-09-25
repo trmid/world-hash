@@ -102,16 +102,23 @@
     word-wrap: break-word;
     max-height: 1.9em;
     opacity: .6;
+    overflow: hidden;
+  }
+
+  span.creator {
+    white-space: nowrap;
   }
 
   span.creator form {
     display: inline-flex;
     gap: .5em;
     height: 1em;
+    width: 15em;
   }
 
   span.creator input {
     color: black;
+    width: 100%;
     border-bottom: 2px solid var(--dark-gold-color);
   }
 

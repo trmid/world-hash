@@ -118,6 +118,7 @@
 
   span.worldName {
     font-size: 1.5em;
+    white-space: nowrap;
   }
 
   span.worldHash {
@@ -140,6 +141,13 @@
   button.download > img {
     height: 1.5em;
     width: 1.5em;
+  }
+
+  @media screen and (max-width: 1550px) {
+    div.ids {
+      height: 7em;
+      margin-top: -1em;
+    }
   }
 	
 </style>

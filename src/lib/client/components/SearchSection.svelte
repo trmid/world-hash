@@ -37,23 +37,23 @@
         if(searchText.length > 4) {
           status = 'resolvingENS';
           try {
-            const data: MinecraftJSON = {
-              worlds: {
-                '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-                '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
-              }
-            } // <TODO> remove placeholder
-            // const data = await resolveENS(searchText as ENSDomain);
+            // const data: MinecraftJSON = {
+            //   worlds: {
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            //     '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
+            //   }
+            // } // <TODO> remove placeholder
+            const data = await resolveENS(searchText as ENSDomain);
             worlds = data.worlds;
             status = 'done';
           } catch(beef) {
@@ -140,7 +140,7 @@
 	section {
     position: relative;
     height: 100vh;
-    width: 100%;
+    width: max(100%, 1280px);
     padding: 2em;
     background: url('/images/overworldBG.png');
     background-repeat: no-repeat;
@@ -240,6 +240,31 @@
 
   div.scrollableList::-webkit-scrollbar-thumb {
     background: var(--secondary-color);
+  }
+
+  @media screen and (max-height: 1050px) {
+    div.scrollableList {
+      max-height: 35vh;
+    }
+  }
+
+  @media screen and (max-height: 850px) {
+    div.scrollableList {
+      max-height: 30vh;
+    }
+  }
+
+  @media screen and (max-width: 1550px) {
+    #worlds h3 {
+      font-size: 3em;
+      white-space: nowrap;
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+    #worlds {
+      width: 45%;
+    }
   }
 	
 </style>

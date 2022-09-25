@@ -28,6 +28,7 @@
 
 	#bedrockLayer {
 		height: 25vh;
+		width: max(100%, 1280px);
 		background: url('/images/bedrock.png');
 	}
 	

@@ -47,27 +47,27 @@
   const readLocalWorldFiles = async () => {
     fileStatus = 'loading';
     try {
-      localWorlds = [
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
-        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' }
-      ]; // <TODO> remove placeholder
-      // localWorlds = await getLocalWorlds();
+      // localWorlds = [
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+      //   { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' }
+      // ]; // <TODO> remove placeholder
+      localWorlds = await getLocalWorlds();
       fileStatus = 'done';
     } catch(beef) {
       console.error(beef);
@@ -83,23 +83,23 @@
       newWorldIDs.clear();
       ensResolutionStatus = 'loading';
       try {
-        ensContent = {
-          worlds: {
-            '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
-          }
-        } // <TODO> remove placeholder
-        // ensContent = await resolveENS(ens);
+        // ensContent = {
+        //   worlds: {
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+        //     '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
+        //   }
+        // } // <TODO> remove placeholder
+        ensContent = await resolveENS(ens);
         worldIDs = [...worldIDs, ...Object.keys(ensContent.worlds)];
         ensResolutionStatus = 'done';
       } catch(beef) {
@@ -279,7 +279,7 @@
 	section {
     position: relative;
     height: 100vh;
-    width: 100%;
+    width: max(100%, 1280px);
     padding: 2em;
     background: url('/images/netherBG.png');
     background-repeat: no-repeat;
@@ -312,7 +312,7 @@
     display: flex;
     flex-direction: column;
     gap: 1.5em;
-    width: 35vw;
+    width: 40vw;
     margin: 25vh 0 0 5vw;
   }
 
@@ -351,7 +351,7 @@
   }
 
   h3 {
-    font-size: 3em;
+    font-size: 2.8em;
     font-weight: normal;
     text-shadow: 2px 2px 5px black;
   }
@@ -384,12 +384,41 @@
     margin: 10vh 5vw 0 0;
   }
 
+  #ensContent h3 {
+    white-space: nowrap;
+  }
+
   #ensContent div.scrollableList {
     max-height: 55vh;
   }
 
   #ensContent > button {
+    margin-right: 1em;
     padding: .5em 1em;
+  }
+
+  @media screen and (max-width: 1890px) {
+    #localWorlds div.scrollableList {
+      max-height: 40vh;
+    }
+  }
+
+  @media screen and (max-height: 950px) {
+    #localWorlds div.scrollableList {
+      max-height: 35vh;
+    }
+    #ensContent div.scrollableList {
+      max-height: 45vh;
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+    #localWorlds {
+      width: 40%;
+    }
+    #ensContent {
+      width: 45%;
+    }
   }
 	
 </style>
