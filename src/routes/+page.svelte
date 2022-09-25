@@ -17,6 +17,8 @@
 <!-- Search Section -->
 <SearchSection />
 
+<div id="bedrockLayer" />
+
 <!-- Share Section -->
 <ShareSection />
 
@@ -24,6 +26,9 @@
 
 <style>
 
-	/* CSS Goes Here */
+	#bedrockLayer {
+		height: 25vh;
+		background: url('/images/bedrock.png');
+	}
 	
 </style>

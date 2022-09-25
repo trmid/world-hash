@@ -284,6 +284,7 @@
     background: url('/images/netherBG.png');
     background-repeat: no-repeat;
     background-position: top left;
+    outline: 10px solid black;
     scroll-snap-align: start;
     overflow: hidden;
     isolation: isolate;
