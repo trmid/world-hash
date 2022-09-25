@@ -37,7 +37,23 @@
         if(searchText.length > 4) {
           status = 'resolvingENS';
           try {
-            const data = await resolveENS(searchText as ENSDomain);
+            const data: MinecraftJSON = {
+              worlds: {
+                '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+                '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
+              }
+            } // <TODO> remove placeholder
+            // const data = await resolveENS(searchText as ENSDomain);
             worlds = data.worlds;
             status = 'done';
           } catch(beef) {
@@ -107,9 +123,11 @@
   {#if status === 'done'}
     <div id="worlds">
       <h3>Found {worldIDs.length.toLocaleString()} world{worldIDs.length === 1 ? '' : 's'}</h3>
-      {#each worldIDs as id}
-        <WorldDisplay {ens} {id} world={worlds[id]} />
-      {/each}
+      <div class="scrollableList">
+        {#each worldIDs as id}
+          <WorldDisplay {ens} {id} world={worlds[id]} />
+        {/each}
+      </div>
     </div>
   {/if}
 
@@ -192,13 +210,35 @@
     gap: 1.5em;
     width: 45vw;
     margin: 5vh 0 0 5vw;
-    isolation: isolate;
   }
 
   #worlds h3 {
     font-size: 4em;
     font-weight: normal;
     text-shadow: 2px 2px 5px black;
+  }
+
+  div.scrollableList {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    max-height: 45vh;
+    padding-right: 1em;
+    overflow: auto;
+  }
+
+  div.scrollableList::-webkit-scrollbar {
+    display: block;
+    width: .8em;
+  }
+
+  div.scrollableList::-webkit-scrollbar-track {
+    background: var(--primary-color);
+    outline: 2px solid white;
+  }
+
+  div.scrollableList::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
   }
 	
 </style>

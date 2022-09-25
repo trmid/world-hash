@@ -58,18 +58,19 @@
 <style>
 
 	div.wrapper {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 1em;
     padding: 0 1em 0 .5em;
     color: black;
     background: var(--gold-color);
-    outline: 4px solid var(--dark-gold-color);
+    border: 4px solid var(--dark-gold-color);
     overflow: hidden;
   }
 
   div.wrapper:hover {
-    outline: 4px solid var(--nether-accent-color);
+    border: 4px solid var(--nether-accent-color);
   }
 
   img.icon {
@@ -105,6 +106,7 @@
 
   span.creator form {
     display: inline-flex;
+    gap: .5em;
     height: 1em;
   }
 

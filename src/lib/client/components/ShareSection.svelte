@@ -47,7 +47,27 @@
   const readLocalWorldFiles = async () => {
     fileStatus = 'loading';
     try {
-      localWorlds = await getLocalWorlds();
+      localWorlds = [
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' },
+        { name: 'Something Cool', dir: 'ok then boomer', imageSrc: 'test' }
+      ]; // <TODO> remove placeholder
+      // localWorlds = await getLocalWorlds();
       fileStatus = 'done';
     } catch(beef) {
       console.error(beef);
@@ -63,8 +83,24 @@
       newWorldIDs.clear();
       ensResolutionStatus = 'loading';
       try {
-        ensContent = await resolveENS(ens);
-        Object.keys(ensContent.worlds).forEach(cid => worldIDs = [...worldIDs, cid]);
+        ensContent = {
+          worlds: {
+            '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
+            '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
+          }
+        } // <TODO> remove placeholder
+        // ensContent = await resolveENS(ens);
+        worldIDs = [...worldIDs, ...Object.keys(ensContent.worlds)];
         ensResolutionStatus = 'done';
       } catch(beef) {
         console.error(beef);
@@ -162,7 +198,7 @@
 
   // Function to update world creator:
   const updateNotch = (cid: string, newCreator: string) => {
-    if(ensContent.worlds[cid]) {
+    if(ensContent.worlds[cid] && ensContent.worlds[cid].creator !== newCreator) {
       ensContent.worlds[cid].creator = newCreator;
       ensContentChanged = true;
     }
@@ -197,9 +233,11 @@
           <h3>Found {localWorlds.length.toLocaleString()} local world{localWorlds.length === 1 ? '' : 's'}</h3>
           <button on:click={readLocalWorldFiles} title="Re-Fetch Local Worlds"><i class="icofont-loop" /></button>
         </div>
-        {#each localWorlds as world}
-          <LocalWorldDisplay loading={localWorldsLoading.includes(world.dir)} onShare={getWorldHash} {world} />
-        {/each}
+        <div class="scrollableList">
+          {#each localWorlds as world}
+            <LocalWorldDisplay loading={localWorldsLoading.includes(world.dir)} onShare={getWorldHash} {world} />
+          {/each}
+        </div>
       </div>
     {/if}
 
@@ -208,9 +246,11 @@
       <div id="ensContent">
         <h3>Your ENS content</h3>
         {#if worldIDs.length > 0}
-          {#each worldIDs as id}
-            <ENSWorldDisplay onThrowWorldInLava={hideWorld} onChangeCreator={updateNotch} {ens} {id} world={ensContent.worlds[id]} isNew={newWorldIDs.has(id)} />
-          {/each}
+          <div class="scrollableList">
+            {#each worldIDs as id}
+              <ENSWorldDisplay onThrowWorldInLava={hideWorld} onChangeCreator={updateNotch} {ens} {id} world={ensContent.worlds[id]} isNew={newWorldIDs.has(id)} />
+            {/each}
+          </div>
         {:else if ensResolutionStatus === 'loading'}
           <span>Loading your ENS contents...</span>
         {:else}
@@ -273,7 +313,6 @@
     gap: 1.5em;
     width: 35vw;
     margin: 25vh 0 0 5vw;
-    isolation: isolate;
   }
 
   div.info {
@@ -281,6 +320,33 @@
     align-items: center;
     justify-content: space-between;
     gap: 2em;
+    padding-right: 1em;
+  }
+
+  div.scrollableList {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding-right: 1em;
+    overflow: auto;
+  }
+
+  div.scrollableList::-webkit-scrollbar {
+    display: block;
+    width: .8em;
+  }
+
+  div.scrollableList::-webkit-scrollbar-track {
+    background: var(--nether-accent-color);
+    outline: 2px solid var(--dark-gold-color);
+  }
+
+  div.scrollableList::-webkit-scrollbar-thumb {
+    background: black;
+  }
+
+  #localWorlds div.scrollableList {
+    max-height: 45vh;
   }
 
   h3 {
@@ -292,11 +358,11 @@
   button {
     color: black;
     background: var(--gold-color);
-    outline: 4px solid var(--dark-gold-color);
+    border: 4px solid var(--dark-gold-color);
   }
 
   button:hover:not(:disabled) {
-    outline-color: var(--nether-accent-color);
+    border-color: var(--nether-accent-color);
   }
 
   button:disabled {
@@ -315,6 +381,10 @@
     gap: 1.5em;
     width: 40vw;
     margin: 10vh 5vw 0 0;
+  }
+
+  #ensContent div.scrollableList {
+    max-height: 55vh;
   }
 
   #ensContent > button {

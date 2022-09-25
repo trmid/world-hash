@@ -83,17 +83,18 @@
 <style>
 
 	div.wrapper {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 1em;
     padding: 0 1em 0 .5em;
     background: var(--accent-color);
-    outline: 4px solid white;
+    border: 4px solid white;
     overflow: hidden;
   }
 
   div.wrapper:hover {
-    outline: 4px solid var(--primary-color);
+    border: 4px solid var(--primary-color);
   }
 
   img.icon {
