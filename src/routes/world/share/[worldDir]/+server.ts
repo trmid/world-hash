@@ -2,7 +2,7 @@ import type { RequestHandler } from "./$types";
 import { error, json } from '@sveltejs/kit';
 import { join } from "path";
 import { getSavesDir } from "$lib/server/minecraft";
-import { addDir, cp, stat } from "$lib/server/ipfs";
+import { addDir, apiCall, cp, stat } from "$lib/server/ipfs";
  
 export const POST: RequestHandler = async ({ params, request }) => {
 
@@ -24,6 +24,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
 
   // Get folder CID:
   const cid = (await (await stat(ipfsWorldDir)).json()).Hash;
+
+  // Pin folder:
+  await apiCall("POST", "/api/v0/pin/add", new URLSearchParams({ arg: `/ipfs/${cid}` }));
 
   // Return world CID:
   return json({ cid });
