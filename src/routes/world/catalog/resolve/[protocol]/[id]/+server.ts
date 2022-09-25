@@ -23,12 +23,13 @@ export const GET: RequestHandler = async ({ params }) => {
     const worldHashContent = await resolver?.getText("minecraft");
     if(!worldHashContent) throw error(404, `Could not resolve ENS minecraft field for name: ${params.id}`);
     cid = worldHashContent;
-  } 
-  
+  }
   // Handle IPFS identifiers:
-  if(params.protocol.match(/^ipfs$/i)) {
+  else if(params.protocol.match(/^ipfs$/i)) {
     cid = params.id;
-  } else {
+  }
+  // Unknown Protocol:
+  else {
     throw error(500, `unsupported protocol: ${params.protocol}`);
   }
 
