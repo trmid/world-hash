@@ -26,15 +26,23 @@ export const GET: RequestHandler = async () => {
 
       // Check if dir contains a level.dat file:
       const datFilepath = join(savesDir, filepath, "level.dat");
-      const levelDatStat = await fs.stat(datFilepath);
-      if(levelDatStat.isFile()) {
-        
-        // Push world to list:
-        worlds.push({
-          name: await parseDatFileName(datFilepath) ?? filepath,
-          dir: filepath,
-          imageSrc: `world/saved/${filepath}/icon`
-        });
+      try {
+        const levelDatStat = await fs.stat(datFilepath);
+        if(levelDatStat.isFile()) {
+          
+          // Push world to list:
+          worlds.push({
+            name: await parseDatFileName(datFilepath) ?? filepath,
+            dir: filepath,
+            imageSrc: `world/saved/${filepath}/icon`
+          });
+        }
+      } catch(err) {
+        if(err instanceof Error && err.message.includes("ENOENT")) {
+          console.warn(`It appears that some files may be missing from a minecraft world save at folder: ${filepath}`);
+        } else {
+          throw err;
+        }
       }
     }
   }
