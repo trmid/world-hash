@@ -29,7 +29,7 @@ html, body {
 	height: 100%;
 	font-family: Silkscreen, sans-serif;
 	color: #ffffff;
-	background-color: var(--secondary-color);
+	background: url('/images/bedrock.png');
 	overflow: hidden;
 }
 

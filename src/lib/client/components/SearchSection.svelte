@@ -37,22 +37,6 @@
         if(searchText.length > 4) {
           status = 'resolvingENS';
           try {
-            // const data: MinecraftJSON = {
-            //   worlds: {
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsd': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsa': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsb': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsc': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfse': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsf': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsg': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsh': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsi': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsj': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsk': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' },
-            //     '0x578013957828937598237598235u7923523523fdsfdsfsl': { name: 'Something', timestamp: 1664064909, creator: 'ncookie.eth' }
-            //   }
-            // } // <TODO> remove placeholder
             const data = await resolveENS(searchText as ENSDomain);
             worlds = data.worlds;
             status = 'done';
@@ -86,6 +70,11 @@
 <!-- #################################################################################################### -->
 
 <section>
+
+  <!-- Background Video -->
+  <video autoplay muted loop id="overworldVideoBG">
+    <source src="/videos/overworldVideo.mp4" type="video/mp4">
+  </video>
 
   <!-- Nether Portal -->
   <img src="/images/overworldPortal.png" alt="Nether Portal" id="portal" on:click={scrollDown}>
@@ -139,22 +128,30 @@
 
 	section {
     position: relative;
-    height: 100vh;
+    height: min(100vh, 1440px);
     width: max(100%, 1280px);
+    margin-top: calc(100vh - min(100vh, 1440px));
     padding: 2em;
-    background: url('/images/overworldBG.png');
-    background-repeat: no-repeat;
-    background-position: bottom right;
     outline: 10px solid black;
-    scroll-snap-align: start;
+    scroll-snap-align: end;
     overflow: hidden;
     isolation: isolate;
   }
 
+  video {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 2560px;
+    z-index: -1;
+  }
+
   #portal {
     position: absolute;
-    bottom: 177px;
-    right: 268px;
+    bottom: 248px;
+    right: 361px;
+    width: 378px;
+    opacity: 0.5;
     user-select: none;
   }
 

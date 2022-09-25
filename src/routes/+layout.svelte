@@ -17,6 +17,8 @@
 	main {
     position: relative;
     height: 100vh;
+    max-width: 2560px;
+    margin: 0 auto;
     overflow: hidden auto;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
