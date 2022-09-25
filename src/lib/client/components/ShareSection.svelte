@@ -132,19 +132,31 @@
     }
   }
 
+  // Function to preview ENS update:
+  const previewUpdate = async () => {
+    try {
+      const previewCID = await shareWorldCatalog(ensContent);
+      window.open(`/ipfs/${previewCID}`);
+    } catch(beef) {
+      console.error(beef);
+    }
+  }
+
   // Function to get world hash for newly shared world:
   const getWorldHash = async (world: LocalWorldInfo) => {
     if(ens) {
       localWorldsLoading = [...localWorldsLoading, world.dir];
       const worldHash = await shareWorld(world.dir);
-      const name = world.name;
-      const timestamp = Math.floor(Date.now() / 1000);
-      const creator = ens;
-      ensContent.worlds[worldHash] = { name, timestamp, creator };
-      ensContentChanged = true;
-      worldIDs = [...worldIDs, worldHash];
-      newWorldIDs.add(worldHash);
-      localWorldsLoading = localWorldsLoading.filter(dir => dir !== world.dir);
+      if(ensContent.worlds[worldHash] === undefined) {
+        const name = world.name;
+        const timestamp = Math.floor(Date.now() / 1000);
+        const creator = ens;
+        ensContent.worlds[worldHash] = { name, timestamp, creator };
+        ensContentChanged = true;
+        worldIDs = [...worldIDs, worldHash];
+        newWorldIDs.add(worldHash);
+        localWorldsLoading = localWorldsLoading.filter(dir => dir !== world.dir);
+      }
     }
   }
 
@@ -225,7 +237,7 @@
         {:else}
           <span>You don't seem to have any worlds up on ENS yet!</span>
         {/if}
-        <button on:click={updateWorlds} disabled={!ensContentChanged || worldIDs.length === 0 || ipfsShareStatus === 'loading' || txStatus === 'loading'}>
+        <button on:click={updateWorlds} disabled={!ensContentChanged || ipfsShareStatus === 'loading' || txStatus === 'loading'}>
           {#if ipfsShareStatus === 'loading'}
             Sharing on IPFS...
           {:else if txStatus === 'loading'}
@@ -234,6 +246,9 @@
             Update ENS
           {/if}
         </button>
+        {#if ensContentChanged}
+          <span class="previewUpdate" on:click={previewUpdate}>Preview Update</span>
+        {/if}
       </div>
     {/if}
 
@@ -372,6 +387,11 @@
   #ensContent > button {
     margin-right: 1em;
     padding: .5em 1em;
+  }
+
+  span.previewUpdate {
+    margin-top: -.8em;
+    cursor: pointer;
   }
 
   @media screen and (max-width: 1890px) {
