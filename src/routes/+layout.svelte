@@ -24,6 +24,12 @@
     scroll-behavior: smooth;
   }
 
+  @media screen and (max-width: 2000px) {
+    main {
+      font-size: .8em;
+    }
+  }
+
   @media screen and (max-width: 1280px) {
     main {
       overflow-x: auto;
