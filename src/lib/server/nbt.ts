@@ -10,6 +10,16 @@
 	required by law.
 */
 
+/**
+ * THIS CODE HAS BEEN (crudely) MODIFIED FROM ITS ORIGINAL STATE.
+ * 
+ * SOME THINGS MAY NOT WORK AS EXPECTED.
+ * 
+ * Further refinement is probably needed.
+ * 
+ * This has been a warning from trmid.
+ */
+
 import * as zlib from 'zlib';
 
 
