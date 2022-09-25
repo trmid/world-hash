@@ -20,7 +20,7 @@ While a simple `.exe` is in development, you can try out World Hash right now by
 
   If you have the Brave IPFS Companion extension, you can find your addresses really easily:
 
-  ![Brave IPFS Companion][braveIpfsCompanion]
+  ![Brave IPFS Companion][braveIpfsComp]
 
 - **Step 4:** Run `npm i` to install World Hash's dependencies.
 
@@ -59,6 +59,6 @@ Setup your `.env` file (an example file is provided).
 Run local server with `npm run dev`.
 
 [banner]: /static/banner.png "World Hash Banner"
-[braveIpfsCompanion]: /static/screenshots/braveIpfsCompanion.png "Brave IPFS Companion"
+[braveIpfsComp]: /static/screenshots/braveIpfsComp.png "Brave IPFS Companion"
 [overworld]: /static/screenshots/overworld.png "World Hash Overworld"
 [nether]: /static/screenshots/nether.png "World Hash Nether"
