@@ -15,8 +15,12 @@ export const POST: RequestHandler = async ({ request }) => {
   const cid = addRes.cid.toString();
 
   // Save json records to IPFS files:
-  const date = new Date(Date.now());
-  await cp(`/ipfs/${cid}`, `/world-hash/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${cid}.json`);
+  try {
+    const date = new Date(Date.now());
+    await cp(`/ipfs/${cid}`, `/world-hash/${date.getFullYear()}/${date.getMonth()}/${date.getDay()}/${cid}.json`);
+  } catch(err) {
+    console.error(err);
+  }
 
   // Return catalog CID:
   return json({ cid });
