@@ -146,15 +146,20 @@
   const getWorldHash = async (world: LocalWorldInfo) => {
     if(ens) {
       localWorldsLoading = [...localWorldsLoading, world.dir];
-      const worldHash = await shareWorld(world.dir);
-      if(ensContent.worlds[worldHash] === undefined) {
-        const name = world.name;
-        const timestamp = Math.floor(Date.now() / 1000);
-        const creator = ens;
-        ensContent.worlds[worldHash] = { name, timestamp, creator };
-        ensContentChanged = true;
-        worldIDs = [...worldIDs, worldHash];
-        newWorldIDs.add(worldHash);
+      try {
+        const worldHash = await shareWorld(world.dir);
+        if(ensContent.worlds[worldHash] === undefined) {
+          const name = world.name;
+          const timestamp = Math.floor(Date.now() / 1000);
+          const creator = ens;
+          ensContent.worlds[worldHash] = { name, timestamp, creator };
+          ensContentChanged = true;
+          worldIDs = [...worldIDs, worldHash];
+          newWorldIDs.add(worldHash);
+        }
+      } catch(beef) {
+        console.error(beef);
+      } finally {
         localWorldsLoading = localWorldsLoading.filter(dir => dir !== world.dir);
       }
     }
