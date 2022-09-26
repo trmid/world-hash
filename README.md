@@ -36,7 +36,7 @@ World Hash's overworld allows you to search for Minecraft worlds from your frien
 
 ## The Nether
 
-World's Hash's nether allows you to browse your local Minecraft worlds, and share any particularly impressive ones with everyone else!
+World Hash's nether allows you to browse your local Minecraft worlds, and share any particularly impressive ones with everyone else!
 
 ![Nether][nether]
 
