@@ -1,0 +1,7 @@
+{
+  "IPFS_API": "http://localhost:5001/",
+  "IPFS_GATEWAY": "http://localhost:8080/",
+  "ETHEREUM_RPC_URL": "https://cloudflare-eth.com/",
+  "MINECRAFT_SAVES_DIR": "C:\\Users\\me\\AppData\\Roaming\\.minecraft\\saves",
+  "MINECRAFT_SHORTCUT": null
+}
