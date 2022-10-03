@@ -94,7 +94,7 @@ export const POST: RequestHandler = async (req) => {
     const standardizedCID = await ipfs.formatCID(params.worldHashCID);
     const now = Date.now();
     const today = new Date(now);
-    const localWorldDir = join(savesDir, `${standardizedCID.slice(0, 8)}-${today.getFullYear()}-${today.getMonth()}-${today.getDay()}-${Math.floor(now / (1000)) % (60 * 60 * 24)}`);
+    const localWorldDir = join(savesDir, `${standardizedCID.slice(0, 8)}-${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}-${Math.floor(now / (1000)) % (60 * 60 * 24)}`);
     await copyFromNode(worldLMNPath, localWorldDir);
   } catch(err) {
     console.error(err);

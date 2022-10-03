@@ -1,16 +1,16 @@
-import { PUBLIC_IPFS_API, PUBLIC_IPFS_GATEWAY } from "$env/static/public";
+import config from "$lib/server/config";
 import { create, globSource } from "ipfs-http-client";
 
-const client = create({ url: PUBLIC_IPFS_API });
+const client = create({ url: config.IPFS_API });
 
 export async function apiCall(method: string, endpoint: string, params?: URLSearchParams, body?: BodyInit) {
-  const url = `${PUBLIC_IPFS_API}${endpoint}${params ? "?" + params.toString() : ""}`;
+  const url = `${config.IPFS_API}${endpoint}${params ? "?" + params.toString() : ""}`;
   console.log(`IPFS API Call: ${method} ${url}`);
   return await fetch(url, { method, body });
 }
 
 export function ipfsFetch(cid: string, path?: string) {
-  const url = `${PUBLIC_IPFS_GATEWAY}/ipfs/${cid}/${path ? path : ""}`;
+  const url = `${config.IPFS_GATEWAY}/ipfs/${cid}/${path ? path : ""}`;
   console.log(`Requesting resource from IPFS: GET ${url}`);
   return fetch(url);
 }
