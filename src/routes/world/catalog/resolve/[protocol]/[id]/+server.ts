@@ -3,7 +3,7 @@ import { error, json } from '@sveltejs/kit';
 import { ethers } from 'ethers';
 import { ipfsFetch, isValidCID } from '$lib/server/ipfs';
 import { isValidWorldInfo, type MinecraftJSON } from '$lib/shared/world';
-import * as env from '$env/static/public';
+import config from '$lib/server/config';
 
 /**
  * Resolves a world catalog from a CID or ENS name.
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params }) => {
   if(params.protocol.match(/^ens$/i)) {
     
     // Fetch content CID from ENS:
-    const provider = new ethers.providers.JsonRpcProvider(env.PUBLIC_ETHEREUM_RPC_URL || "https://cloudflare-eth.com");
+    const provider = new ethers.providers.JsonRpcProvider(config.ETHEREUM_RPC_URL);
     const resolver = await provider.getResolver(params.id);
     const worldHashContent = await resolver?.getText("minecraft");
     if(!worldHashContent) throw error(404, `Could not resolve ENS minecraft field for name: ${params.id}`);

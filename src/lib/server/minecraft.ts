@@ -1,6 +1,6 @@
 import * as fs from "fs/promises";
 import * as nbt from "./nbt";
-import * as env from '$env/static/public';
+import config from '$lib/server/config';
 
 /**
  * Finds the minecraft saves directory using appdata environment variable. (Non-windows installations )
@@ -8,7 +8,7 @@ import * as env from '$env/static/public';
  * @returns Minecraft saves directory or null
  */
 export const getSavesDir = async () => {
-  const savesDir = env.PUBLIC_MINECRAFT_SAVES_DIR || `${process.env.appdata}\\.minecraft\\saves`;
+  const savesDir = config.MINECRAFT_SAVES_DIR;
   if(!savesDir || !(await fs.stat(savesDir)).isDirectory()) {
     return null;
   }
