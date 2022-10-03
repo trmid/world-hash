@@ -12,7 +12,7 @@ World Hash is an application for sharing and experiencing Minecraft worlds throu
 
 - **Prerequisite:** Make sure you have [Node.js](https://nodejs.org/en/download/) installed.
 
-- **Step 1:** Download the latest [World Hash Launcher](https://github.com/trmid/world-hash/releases/tag/launcher-v1.0.0).
+- **Step 1:** Download the latest [World Hash Launcher](https://github.com/trmid/world-hash/releases/latest).
 
 - **Step 2:** Copy the downloaded `WorldHash.exe` file to a local directory.
 
